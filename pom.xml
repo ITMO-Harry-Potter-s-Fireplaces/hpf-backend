@@ -23,6 +23,6 @@
     </properties>
 
     <modules>
-
+        <module>eureka_server</module>
     </modules>
 </project>
