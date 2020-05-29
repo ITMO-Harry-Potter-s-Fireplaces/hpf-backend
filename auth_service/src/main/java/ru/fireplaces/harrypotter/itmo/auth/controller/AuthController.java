@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.LoginRequest;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.response.LoginResponse;
+import ru.fireplaces.harrypotter.itmo.auth.service.AuthService;
 import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponse;
+import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponseBuilder;
 
 /**
  * REST controller for register and login endpoints.
@@ -28,9 +30,11 @@ public class AuthController {
 
     private static final Logger logger = LogManager.getLogger(AuthController.class);
 
+    private final AuthService authService;
+
     @Autowired
-    public AuthController() {
-        // TODO: Init auth service
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     /**
@@ -44,7 +48,8 @@ public class AuthController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<LoginResponse> register(@RequestBody LoginRequest request) {
         logger.info("register: loginRequest=" + request);
-        CodeMessageResponse<LoginResponse> response = null; // TODO: Fill response
+        CodeMessageResponse<LoginResponse> response =
+                CodeMessageResponseBuilder.ok(authService.register(request));
         logger.info("register: response=" + response.getBody());
         return response;
     }
@@ -60,7 +65,8 @@ public class AuthController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<LoginResponse> login(@RequestBody LoginRequest request) {
         logger.info("login: loginRequest=" + request);
-        CodeMessageResponse<LoginResponse> response = null; // TODO: Fill response
+        CodeMessageResponse<LoginResponse> response =
+                CodeMessageResponseBuilder.ok(authService.login(request));
         logger.info("login: response=" + response.getBody());
         return response;
     }

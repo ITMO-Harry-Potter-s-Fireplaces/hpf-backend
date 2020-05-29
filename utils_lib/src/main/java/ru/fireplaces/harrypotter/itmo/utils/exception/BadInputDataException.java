@@ -18,4 +18,8 @@ public class BadInputDataException extends RuntimeException {
     public BadInputDataException(String message) {
         super(message);
     }
+
+    public BadInputDataException(Class<?> classType, String fieldName, String message) {
+        super(fieldName + " of " + classType.getSimpleName() + " " + message);
+    }
 }
