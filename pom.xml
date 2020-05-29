@@ -27,5 +27,6 @@
         <module>proxy_server</module>
         <module>auth_service</module>
         <module>utils_lib</module>
+        <module>fireplace_service</module>
     </modules>
 </project>
