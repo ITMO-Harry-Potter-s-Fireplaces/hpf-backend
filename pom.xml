@@ -26,5 +26,6 @@
         <module>eureka_server</module>
         <module>proxy_server</module>
         <module>auth_service</module>
+        <module>utils_lib</module>
     </modules>
 </project>

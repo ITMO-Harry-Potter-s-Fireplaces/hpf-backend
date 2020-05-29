@@ -66,6 +66,13 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+        <!-- Custom Utils Lib -->
+        <dependency>
+            <groupId>ru.fireplaces.harrypotter.itmo</groupId>
+            <artifactId>utils_lib</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
