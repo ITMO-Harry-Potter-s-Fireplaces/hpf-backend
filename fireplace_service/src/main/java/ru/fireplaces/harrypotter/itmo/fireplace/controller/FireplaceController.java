@@ -26,7 +26,7 @@ public class FireplaceController {
     /**
      * Controller path value.
      */
-    public static final String CONTROLLER_PATH = "";
+    public static final String CONTROLLER_PATH = "/fireplaces";
 
     private static final Logger logger = LogManager.getLogger(FireplaceController.class);
 
