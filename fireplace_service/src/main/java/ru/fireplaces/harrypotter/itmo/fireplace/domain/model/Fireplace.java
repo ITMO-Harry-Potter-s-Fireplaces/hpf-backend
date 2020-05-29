@@ -7,13 +7,13 @@ import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 import javax.persistence.*;
 
 /**
- * User entity class.
+ * Fireplace entity class.
  *
  * @author seniorkot
  */
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "fireplaces")
 public class Fireplace implements CopyFromRequest<FireplaceRequest> {
 
     /**
