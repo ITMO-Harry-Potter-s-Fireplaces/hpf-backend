@@ -81,9 +81,6 @@ public class UserRequest implements RequestRequiredFields {
         if (StringUtils.isEmpty(this.email)) {
             list.add("email");
         }
-        if (this.roleId == null) {
-            list.add("role");
-        }
         if (StringUtils.isEmpty(this.name)) {
             list.add("name");
         }
