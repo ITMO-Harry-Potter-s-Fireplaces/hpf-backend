@@ -11,7 +11,7 @@
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
 
-        <RollingFile name="debugLog" fileName="${LOG_PATH}/security_${LOG_SUFFIX}_debug.log"
+        <RollingFile name="debugLog" fileName="${LOG_PATH}/auth_${LOG_SUFFIX}_debug.log"
                      filePattern="${LOG_PATH}/auth_${LOG_SUFFIX}_%d{yyyy-MM-dd}-%i_debug.log">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -21,7 +21,7 @@
             <DefaultRolloverStrategy max="5"/>
         </RollingFile>
 
-        <RollingFile name="infoLog" fileName="${LOG_PATH}/security_${LOG_SUFFIX}_info.log"
+        <RollingFile name="infoLog" fileName="${LOG_PATH}/auth_${LOG_SUFFIX}_info.log"
                      filePattern="${LOG_PATH}/auth_${LOG_SUFFIX}_%d{yyyy-MM-dd}-%i_info.log">
             <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
@@ -31,7 +31,7 @@
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
 
-        <RollingFile name="errorLog" fileName="${LOG_PATH}/security_${LOG_SUFFIX}_error.log"
+        <RollingFile name="errorLog" fileName="${LOG_PATH}/auth_${LOG_SUFFIX}_error.log"
                      filePattern="${LOG_PATH}/auth_${LOG_SUFFIX}_%d{yyyy-MM-dd}-%i_error.log">
             <LevelRangeFilter minLevel="ERROR" maxLevel="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
