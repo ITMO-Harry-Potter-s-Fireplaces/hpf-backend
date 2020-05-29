@@ -48,7 +48,7 @@ public class FireplaceController {
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link Fireplace} objects
      */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponse<Fireplace> getFireplaces(@RequestHeader(value = "Authorization") String token,
                                                  @PageableDefault(size = 20, sort = "id") Pageable pageable,
                                                  @RequestBody(required = false) FireplaceRequest fireplaceParams) {
