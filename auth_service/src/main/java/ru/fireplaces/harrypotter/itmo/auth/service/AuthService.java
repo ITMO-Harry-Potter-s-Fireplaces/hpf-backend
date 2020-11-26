@@ -3,6 +3,7 @@ package ru.fireplaces.harrypotter.itmo.auth.service;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.LoginRequest;
+import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.response.LoginResponse;
 import ru.fireplaces.harrypotter.itmo.utils.exception.*;
 
@@ -23,7 +24,7 @@ public interface AuthService {
      * @throws EntityAlreadyExistsException User already exists
      * @throws BadInputDataException Login or password are missed
      */
-    LoginResponse register(@NonNull LoginRequest request)
+    LoginResponse register(@NonNull UserRequest request)
             throws EntityAlreadyExistsException, BadInputDataException;
 
     /**

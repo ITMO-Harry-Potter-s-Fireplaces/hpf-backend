@@ -52,13 +52,13 @@ public class User implements CopyFromRequest<UserRequest> {
     /**
      * User first name.
      */
-    @Column(length = 63)
+    @Column(length = 63, nullable = false)
     private String name;
 
     /**
      * User last name.
      */
-    @Column(length = 63)
+    @Column(length = 63, nullable = false)
     private String surname;
 
     /**
@@ -71,7 +71,7 @@ public class User implements CopyFromRequest<UserRequest> {
      * User date of birth.
      */
     @JsonFormat(pattern="dd.MM.yyyy")
-    @Column(name = "date_birth")
+    @Column(name = "date_birth", nullable = false)
     private LocalDate dateOfBirth;
 
     /**
@@ -110,12 +110,8 @@ public class User implements CopyFromRequest<UserRequest> {
     @Override
     public void copy(UserRequest request) {
         this.email = request.getEmail();
-        if (!StringUtils.isEmpty(request.getPassword())) {
-            this.password = request.getPassword();
-        }
-        if (request.getRole() != null) {
-            this.role = request.getRole();
-        }
+        this.password = request.getPassword();
+        this.role = request.getRole();
         this.name = request.getName();
         this.surname = request.getSurname();
         this.middleName = request.getMiddleName();
@@ -138,31 +134,6 @@ public class User implements CopyFromRequest<UserRequest> {
                 ? request.getMiddleName() : this.middleName;
         this.dateOfBirth = request.getDateOfBirth() != null
                 ? request.getDateOfBirth() : this.dateOfBirth;
-    }
-
-    @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $id = this.getId();
-        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $role = this.getRole();
-        result = result * PRIME + ($role == null ? 43 : $role.hashCode());
-        final Object $email = this.getEmail();
-        result = result * PRIME + ($email == null ? 43 : $email.hashCode());
-        final Object $password = this.getPassword();
-        result = result * PRIME + ($password == null ? 43 : $password.hashCode());
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $surname = this.getSurname();
-        result = result * PRIME + ($surname == null ? 43 : $surname.hashCode());
-        final Object $middleName = this.getMiddleName();
-        result = result * PRIME + ($middleName == null ? 43 : $middleName.hashCode());
-        final Object $dateOfBirth = this.getDateOfBirth();
-        result = result * PRIME + ($dateOfBirth == null ? 43 : $dateOfBirth.hashCode());
-        final Object $active = this.getActive();
-        result = result * PRIME + ($active == null ? 43 : $active.hashCode());
-        return result;
     }
 
     @Override

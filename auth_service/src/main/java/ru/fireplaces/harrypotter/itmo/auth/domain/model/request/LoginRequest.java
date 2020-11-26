@@ -19,7 +19,7 @@ public class LoginRequest implements RequestRequiredFields {
     /**
      * Login: username or email.
      */
-    private String login;
+    private String email;
 
     /**
      * User password.
@@ -38,7 +38,7 @@ public class LoginRequest implements RequestRequiredFields {
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
-        if (StringUtils.isEmpty(this.login)) {
+        if (StringUtils.isEmpty(this.email)) {
             list.add("login");
         }
         if (StringUtils.isEmpty(this.password)) {
@@ -49,6 +49,6 @@ public class LoginRequest implements RequestRequiredFields {
 
     @Override
     public String toString() {
-        return "LoginRequest(login=" + this.getLogin() + ")";
+        return "LoginRequest(email=" + this.getEmail() + ")";
     }
 }

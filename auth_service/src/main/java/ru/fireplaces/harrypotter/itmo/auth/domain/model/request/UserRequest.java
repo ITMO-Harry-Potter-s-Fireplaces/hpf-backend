@@ -81,14 +81,14 @@ public class UserRequest implements RequestRequiredFields {
         if (StringUtils.isEmpty(this.email)) {
             list.add("email");
         }
+        if (StringUtils.isEmpty(this.password)) {
+            list.add("password");
+        }
         if (StringUtils.isEmpty(this.name)) {
             list.add("name");
         }
         if (StringUtils.isEmpty(this.surname)) {
             list.add("surname");
-        }
-        if (StringUtils.isEmpty(this.middleName)) {
-            list.add("middleName");
         }
         if (this.dateOfBirth == null) {
             list.add("dateOfBirth");

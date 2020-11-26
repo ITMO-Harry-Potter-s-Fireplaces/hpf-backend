@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.LoginRequest;
+import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.response.LoginResponse;
 import ru.fireplaces.harrypotter.itmo.auth.service.AuthService;
 import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponse;
@@ -46,7 +47,7 @@ public class AuthController {
      */
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public CodeMessageResponse<LoginResponse> register(@RequestBody LoginRequest request) {
+    public CodeMessageResponse<LoginResponse> register(@RequestBody UserRequest request) {
         logger.info("register: loginRequest=" + request);
         CodeMessageResponse<LoginResponse> response =
                 CodeMessageResponseBuilder.ok(authService.register(request));
