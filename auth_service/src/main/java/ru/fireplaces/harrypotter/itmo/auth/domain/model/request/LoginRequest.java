@@ -46,4 +46,9 @@ public class LoginRequest implements RequestRequiredFields {
         }
         return list;
     }
+
+    @Override
+    public String toString() {
+        return "LoginRequest(login=" + this.getLogin() + ")";
+    }
 }

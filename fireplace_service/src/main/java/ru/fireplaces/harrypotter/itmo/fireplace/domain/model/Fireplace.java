@@ -42,16 +42,11 @@ public class Fireplace implements CopyFromRequest<FireplaceRequest> {
     }
 
     @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $id = this.getId();
-        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $lng = this.getLng();
-        result = result * PRIME + ($lng == null ? 43 : $lng.hashCode());
-        final Object $lat = this.getLat();
-        result = result * PRIME + ($lat == null ? 43 : $lat.hashCode());
-        return result;
+    public void update(FireplaceRequest request) {
+        this.lng = request.getLng() != null
+                ? request.getLng() : this.lng;
+        this.lat = request.getLat() != null
+                ? request.getLat() : this.lat;
     }
 
     @Override

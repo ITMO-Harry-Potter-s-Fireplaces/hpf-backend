@@ -96,30 +96,9 @@ public class UserRequest implements RequestRequiredFields {
         return list;
     }
 
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $email = this.getEmail();
-        result = result * PRIME + ($email == null ? 43 : $email.hashCode());
-        final Object $password = this.getPassword();
-        result = result * PRIME + ($password == null ? 43 : $password.hashCode());
-        final Object $roleId = this.getRoleId();
-        result = result * PRIME + ($roleId == null ? 43 : $roleId.hashCode());
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $surname = this.getSurname();
-        result = result * PRIME + ($surname == null ? 43 : $surname.hashCode());
-        final Object $middleName = this.getMiddleName();
-        result = result * PRIME + ($middleName == null ? 43 : $middleName.hashCode());
-        final Object $dateOfBirth = this.getDateOfBirth();
-        result = result * PRIME + ($dateOfBirth == null ? 43 : $dateOfBirth.hashCode());
-        return result;
-    }
-
     @Override
     public String toString() {
         return "UserRequest(email=" + this.getEmail()
-                + ", password=" + this.getPassword()
                 + ", roleId=" + this.getRoleId()
                 + ", name=" + this.getName()
                 + ", surname=" + this.getSurname()

@@ -60,20 +60,13 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     }
 
     @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $id = this.getId();
-        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $departure = this.getDeparture();
-        result = result * PRIME + ($departure == null ? 43 : $departure.hashCode());
-        final Object $arrival = this.getArrival();
-        result = result * PRIME + ($arrival == null ? 43 : $arrival.hashCode());
-        final Object $departureTime = this.getDepartureTime();
-        result = result * PRIME + ($departureTime == null ? 43 : $departureTime.hashCode());
-        final Object $userId = this.getUserId();
-        result = result * PRIME + ($userId == null ? 43 : $userId.hashCode());
-        return result;
+    public void update(ClaimRequest request) {
+        this.departure = request.getDeparture() != null
+                ? request.getDeparture() : this.departure;
+        this.arrival = request.getArrival() != null
+                ? request.getArrival() : this.arrival;
+        this.departureTime = request.getDepartureTime() != null
+                ? request.getDepartureTime() : this.departureTime;
     }
 
     @Override

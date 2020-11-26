@@ -38,17 +38,6 @@ public class FireplaceRequest implements RequestRequiredFields {
     }
 
     @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $lng = this.getLng();
-        result = result * PRIME + ($lng == null ? 43 : $lng.hashCode());
-        final Object $lat = this.getLat();
-        result = result * PRIME + ($lat == null ? 43 : $lat.hashCode());
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "FireplaceRequest(lng=" + this.getLng()
                 + ", lat=" + this.getLat() + ")";

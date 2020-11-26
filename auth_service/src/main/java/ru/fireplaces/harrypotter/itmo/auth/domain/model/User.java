@@ -123,6 +123,24 @@ public class User implements CopyFromRequest<UserRequest> {
     }
 
     @Override
+    public void update(UserRequest request) {
+        this.email = !StringUtils.isEmpty(request.getEmail())
+                ? request.getEmail() : this.email;
+        this.password = !StringUtils.isEmpty(request.getPassword())
+                ? request.getPassword() : this.password;
+        this.role = request.getRole() != null
+                ? request.getRole() : this.role;
+        this.name = !StringUtils.isEmpty(request.getName())
+                ? request.getName() : this.name;
+        this.surname = !StringUtils.isEmpty(request.getSurname())
+                ? request.getSurname() : this.surname;
+        this.middleName = !StringUtils.isEmpty(request.getMiddleName())
+                ? request.getMiddleName() : this.middleName;
+        this.dateOfBirth = request.getDateOfBirth() != null
+                ? request.getDateOfBirth() : this.dateOfBirth;
+    }
+
+    @Override
     public int hashCode() {
         final int PRIME = 59;
         int result = 1;

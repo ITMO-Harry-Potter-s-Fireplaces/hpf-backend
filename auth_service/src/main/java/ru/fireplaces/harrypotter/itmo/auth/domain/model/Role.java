@@ -1,6 +1,7 @@
 package ru.fireplaces.harrypotter.itmo.auth.domain.model;
 
 import lombok.Data;
+import org.springframework.util.StringUtils;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.RoleRequest;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
@@ -35,14 +36,10 @@ public class Role implements CopyFromRequest<RoleRequest> {
     }
 
     @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $id = this.getId();
-        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        return result;
+    public void update(RoleRequest request) {
+        this.name = !StringUtils.isEmpty(request.getName())
+                ? request.getName() : this.name;
+
     }
 
     @Override

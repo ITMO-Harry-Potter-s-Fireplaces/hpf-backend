@@ -31,15 +31,6 @@ public class RoleRequest implements RequestRequiredFields {
     }
 
     @Override
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        return result;
-    }
-
-    @Override
     public String toString() {
         return "RoleRequest(name=" + this.getName() + ")";
     }

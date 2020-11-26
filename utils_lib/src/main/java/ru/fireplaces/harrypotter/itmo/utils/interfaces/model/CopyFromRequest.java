@@ -20,4 +20,13 @@ public interface CopyFromRequest<T> extends Serializable {
      * @param request Request params.
      */
     void copy(T request);
+
+    /**
+     * Updates model params from request.<br>
+     * Null fields should be ignored.
+     *
+     * @param request Request params
+     */
+    void update(T request);
+
 }

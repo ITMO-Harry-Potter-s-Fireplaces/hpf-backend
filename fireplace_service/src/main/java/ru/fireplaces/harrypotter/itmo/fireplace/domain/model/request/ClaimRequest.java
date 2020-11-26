@@ -63,18 +63,6 @@ public class ClaimRequest implements RequestRequiredFields {
         return list;
     }
 
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $departureId = this.getDepartureId();
-        result = result * PRIME + ($departureId == null ? 43 : $departureId.hashCode());
-        final Object $arrivalId = this.getArrivalId();
-        result = result * PRIME + ($arrivalId == null ? 43 : $arrivalId.hashCode());
-        final Object $departureTime = this.getDepartureTime();
-        result = result * PRIME + ($departureTime == null ? 43 : $departureTime.hashCode());
-        return result;
-    }
-
     @Override
     public String toString() {
         return "ClaimRequest(departureId=" + this.getDepartureId()
