@@ -1,11 +1,12 @@
 package ru.fireplaces.harrypotter.itmo.fireplace.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Claim entity class.
@@ -41,9 +42,9 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     /**
      * Departure date and time.
      */
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="dd.MM.yyyy HH:mm")
     @Column(name = "departure_time")
-    private Date departureTime;
+    private LocalDateTime departureTime;
 
     /**
      * User ID.

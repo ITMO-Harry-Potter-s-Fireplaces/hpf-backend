@@ -92,7 +92,7 @@ public class SecurityServiceImpl implements SecurityService {
                     .withClaim("name", user.getName())
                     .withClaim("surname", user.getSurname())
                     .withClaim("middleName", user.getMiddleName())
-                    .withClaim("dateOfBirth", user.getDateOfBirth())
+                    .withClaim("dateOfBirth", user.getDateOfBirth().toString())
                     .withIssuedAt(new Date())
                     .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_MILLIS))
                     .sign(algorithm);

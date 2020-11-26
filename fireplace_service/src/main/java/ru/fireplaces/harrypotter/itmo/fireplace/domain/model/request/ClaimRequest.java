@@ -2,13 +2,13 @@ package ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.Data;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.request.RequestRequiredFields;
-import ru.fireplaces.harrypotter.itmo.utils.json.JsonDatetimeDeserializer;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,8 +33,8 @@ public class ClaimRequest implements RequestRequiredFields {
     /**
      * Departure date and time.
      */
-    @JsonDeserialize(using = JsonDatetimeDeserializer.class)
-    private Date departureTime;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    private LocalDateTime departureTime;
 
     /**
      * Departure fireplace (to copy).

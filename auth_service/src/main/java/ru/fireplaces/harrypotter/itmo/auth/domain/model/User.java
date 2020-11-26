@@ -9,7 +9,7 @@ import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * User entity class.
@@ -70,10 +70,9 @@ public class User implements CopyFromRequest<UserRequest> {
     /**
      * User date of birth.
      */
-    @Temporal(TemporalType.DATE)
     @JsonFormat(pattern="dd.MM.yyyy")
     @Column(name = "date_birth")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     /**
      * Is user active.

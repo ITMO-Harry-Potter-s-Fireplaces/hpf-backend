@@ -3,15 +3,15 @@ package ru.fireplaces.harrypotter.itmo.auth.domain.model.request;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.Role;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.request.RequestRequiredFields;
-import ru.fireplaces.harrypotter.itmo.utils.json.JsonDateDeserializer;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,8 +57,8 @@ public class UserRequest implements RequestRequiredFields {
     /**
      * User date of birth.
      */
-    @JsonDeserialize(using = JsonDateDeserializer.class)
-    private Date dateOfBirth;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate dateOfBirth;
 
     /**
      * User role (to copy).
