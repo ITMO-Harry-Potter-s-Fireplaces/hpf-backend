@@ -1,13 +1,11 @@
 package ru.fireplaces.harrypotter.itmo.auth.domain.model.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Data;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import ru.fireplaces.harrypotter.itmo.auth.domain.model.Role;
+import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.request.RequestRequiredFields;
 
 import java.time.LocalDate;
@@ -36,8 +34,7 @@ public class UserRequest implements RequestRequiredFields {
     /**
      * User role ID.
      */
-    @JsonSetter("role")
-    private Long roleId;
+    private Role role;
 
     /**
      * User first name.
@@ -59,12 +56,6 @@ public class UserRequest implements RequestRequiredFields {
      */
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate dateOfBirth;
-
-    /**
-     * User role (to copy).
-     */
-    @JsonIgnore
-    private Role role;
 
     /**
      * Returns a password encoded via MD5 algorithm.
@@ -99,7 +90,7 @@ public class UserRequest implements RequestRequiredFields {
     @Override
     public String toString() {
         return "UserRequest(email=" + this.getEmail()
-                + ", roleId=" + this.getRoleId()
+                + ", role=" + this.getRole()
                 + ", name=" + this.getName()
                 + ", surname=" + this.getSurname()
                 + ", middleName=" + this.getMiddleName()

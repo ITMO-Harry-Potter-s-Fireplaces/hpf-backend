@@ -1,11 +1,11 @@
 package ru.fireplaces.harrypotter.itmo.auth.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
+import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
 import javax.persistence.*;
@@ -31,9 +31,7 @@ public class User implements CopyFromRequest<UserRequest> {
     /**
      * User role.
      */
-    @JsonIgnore
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @Column(nullable = false)
     private Role role;
 
     /**
@@ -81,26 +79,6 @@ public class User implements CopyFromRequest<UserRequest> {
     private Boolean active;
 
     /**
-     * JSON Getter to return role ID.
-     *
-     * @return {@link Role} ID
-     */
-    @JsonGetter("roleId")
-    public Long getRoleId() {
-        return role.getId();
-    }
-
-    /**
-     * JSON Getter to return role name.
-     *
-     * @return {@link Role} name
-     */
-    @JsonGetter("roleName")
-    public String getRoleName() {
-        return role.getName();
-    }
-
-    /**
      * Empty constructor for active user creation.
      */
     public User() {
@@ -139,8 +117,7 @@ public class User implements CopyFromRequest<UserRequest> {
     @Override
     public String toString() {
         return "User(id=" + this.getId()
-                + ", roleId=" + this.getRoleId()
-                + ", roleName=" + this.getRoleName()
+                + ", role=" + this.getRole()
                 + ", email=" + this.getEmail()
                 + ", name=" + this.getName()
                 + ", surname=" + this.getSurname()

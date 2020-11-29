@@ -4,8 +4,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.fireplaces.harrypotter.itmo.auth.domain.model.Role;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.User;
+import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,7 +73,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /**
      * Counts how many users have certain role.
      *
-     * @param role {@link Role} object
+     * @param role {@link Role} qualifier
      * @return the number of {@link User} with such role
      */
     long countByRole(Role role);

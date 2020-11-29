@@ -10,7 +10,6 @@ import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.LoginRequest;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.response.LoginResponse;
 import ru.fireplaces.harrypotter.itmo.auth.service.AuthService;
-import ru.fireplaces.harrypotter.itmo.auth.service.RoleService;
 import ru.fireplaces.harrypotter.itmo.auth.service.SecurityService;
 import ru.fireplaces.harrypotter.itmo.utils.exception.*;
 
@@ -29,15 +28,12 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final SecurityService securityService;
-    private final RoleService roleService;
 
     @Autowired
     public AuthServiceImpl(UserRepository userRepository,
-                           SecurityService securityService,
-                           RoleService roleService) {
+                           SecurityService securityService) {
         this.userRepository = userRepository;
         this.securityService = securityService;
-        this.roleService = roleService;
     }
 
     @Override
@@ -52,7 +48,6 @@ public class AuthServiceImpl implements AuthService {
             throw new EntityAlreadyExistsException("User with email " + request.getEmail() + " already exists");
         }
         User user = new User();
-        request.setRole(roleService.getRole(2L));
         user.copy(request);
         User savedUser = userRepository.save(user);
         return new LoginResponse(savedUser.getId(), securityService.generateToken(savedUser));

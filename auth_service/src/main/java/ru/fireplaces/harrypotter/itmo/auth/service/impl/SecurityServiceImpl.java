@@ -86,8 +86,7 @@ public class SecurityServiceImpl implements SecurityService {
             return JWT.create()
                     .withIssuer("ITMO-HPF.SecurityService")
                     .withClaim("id", user.getId())
-                    .withClaim("roleId", user.getRoleId())
-                    .withClaim("roleName", user.getRoleName())
+                    .withClaim("role", user.getRole().toString())
                     .withClaim("email", user.getEmail())
                     .withClaim("name", user.getName())
                     .withClaim("surname", user.getSurname())
@@ -120,10 +119,10 @@ public class SecurityServiceImpl implements SecurityService {
         try {
             DecodedJWT jwt = JWT.decode(token);
             User user = userService.getUser(jwt.getClaim("id").asLong());
-            if (user.getRoleId().equals(jwt.getClaim("roleId").asLong())) {
+            if (user.getRole().toString().equals(jwt.getClaim("role").asString())) {
                 return user;
             }
-            throw new ActionForbiddenException("Roles doesn't match");
+            throw new ActionForbiddenException("Roles don't match");
         } catch (BadInputDataException | JWTDecodeException | IllegalArgumentException e) {
             logger.error("Error during token decoding:", e);
         } catch (ActionForbiddenException | EntityNotFoundException e) {

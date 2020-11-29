@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.auth.domain.dao.UserRepository;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.User;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
-import ru.fireplaces.harrypotter.itmo.auth.service.RoleService;
 import ru.fireplaces.harrypotter.itmo.auth.service.UserService;
 import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityAlreadyExistsException;
@@ -29,13 +28,10 @@ public class UserServiceImpl implements UserService {
     public static final String SERVICE_VALUE = "UserServiceImpl";
 
     private final UserRepository userRepository;
-    private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           RoleService roleService) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleService = roleService;
     }
 
     @Override
@@ -72,9 +68,6 @@ public class UserServiceImpl implements UserService {
         User user = getUser(id);
         if (!user.getEmail().equals(newUser.getEmail()) && userRepository.existsByEmail(newUser.getEmail())) {
             throw new EntityAlreadyExistsException("User with such email already exists");
-        }
-        if (newUser.getRoleId() != null) {
-            newUser.setRole(roleService.getRole(newUser.getRoleId()));
         }
         user.copy(newUser);
         return userRepository.save(user);
