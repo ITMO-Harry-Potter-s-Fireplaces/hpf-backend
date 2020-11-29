@@ -89,7 +89,6 @@ public class User implements CopyFromRequest<UserRequest> {
     public void copy(UserRequest request) {
         this.email = request.getEmail();
         this.password = request.getPassword();
-        this.role = request.getRole();
         this.name = request.getName();
         this.surname = request.getSurname();
         this.middleName = request.getMiddleName();

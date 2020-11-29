@@ -39,7 +39,7 @@ public class LoginRequest implements RequestRequiredFields {
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
         if (StringUtils.isEmpty(this.email)) {
-            list.add("login");
+            list.add("email");
         }
         if (StringUtils.isEmpty(this.password)) {
             list.add("password");
