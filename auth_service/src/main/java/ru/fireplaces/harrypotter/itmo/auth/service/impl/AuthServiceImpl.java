@@ -11,7 +11,6 @@ import ru.fireplaces.harrypotter.itmo.auth.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.auth.domain.model.response.LoginResponse;
 import ru.fireplaces.harrypotter.itmo.auth.service.AuthService;
 import ru.fireplaces.harrypotter.itmo.auth.service.SecurityService;
-import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.exception.*;
 
 import java.util.List;
@@ -50,7 +49,6 @@ public class AuthServiceImpl implements AuthService {
         }
         User user = new User();
         user.copy(request);
-        user.setRole(Role.USER);
         User savedUser = userRepository.save(user);
         return new LoginResponse(savedUser.getId(), securityService.generateToken(savedUser));
     }

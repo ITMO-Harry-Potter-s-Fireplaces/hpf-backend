@@ -32,11 +32,6 @@ public class UserRequest implements RequestRequiredFields {
     private String password;
 
     /**
-     * User role ID.
-     */
-    private Role role;
-
-    /**
      * User first name.
      */
     private String name;
@@ -90,7 +85,6 @@ public class UserRequest implements RequestRequiredFields {
     @Override
     public String toString() {
         return "UserRequest(email=" + this.getEmail()
-                + ", role=" + this.getRole()
                 + ", name=" + this.getName()
                 + ", surname=" + this.getSurname()
                 + ", middleName=" + this.getMiddleName()

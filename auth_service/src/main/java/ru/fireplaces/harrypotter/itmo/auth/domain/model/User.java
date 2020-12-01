@@ -82,6 +82,7 @@ public class User implements CopyFromRequest<UserRequest> {
      * Empty constructor for active user creation.
      */
     public User() {
+        this.role = Role.USER;
         this.active = true;
     }
 
