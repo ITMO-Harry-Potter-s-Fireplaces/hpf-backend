@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>fireplace_service</artifactId>
-    <version>0.1</version>
+    <artifactId>security_service</artifactId>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>HPF Fireplace Service</name>
-    <description>Harry Potter's Fireplaces main service</description>
+    <name>HPF Security Service</name>
+    <description>Harry Potter's Fireplaces Security service</description>
 
     <parent>
         <artifactId>hpf-microservices</artifactId>
@@ -82,6 +82,20 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.10</version>
+        </dependency>
+
+        <!-- Commons Codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
+
+        <!-- Auth0 - JWT -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>3.11.0</version>
         </dependency>
 
         <!-- Swagger -->

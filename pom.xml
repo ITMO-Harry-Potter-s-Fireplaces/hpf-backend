@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.4.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -20,13 +20,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>8</java.version>
+        <swagger.version>2.9.2</swagger.version>
     </properties>
 
     <modules>
         <module>eureka_server</module>
         <module>proxy_server</module>
-        <module>auth_service</module>
-        <module>utils_lib</module>
+        <module>security_service</module>
         <module>fireplace_service</module>
+        <module>utils_lib</module>
     </modules>
 </project>
