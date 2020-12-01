@@ -22,15 +22,15 @@ public class HttpErrorExceptionHandler {
 
     /**
      * Exception handler method for custom {@link RuntimeException} realizations.<br>
-     * Called when {@link BadDateFormatException} or {@link BadInputDataException}
-     * are thrown during any controller method execution.
+     * Called when {@link BadInputDataException} is thrown during any controller
+     * method execution.
      *
      * @param ex Thrown exception
      * @param request Incoming request
      * @return <b>Response</b>: 200<br>
      *     <b>Body</b>: {@link CodeMessage} object (code: <i>400</i>)
      */
-    @ExceptionHandler({BadDateFormatException.class, BadInputDataException.class})
+    @ExceptionHandler(BadInputDataException.class)
     protected CodeMessageResponse<?> handleBadRequest(RuntimeException ex, WebRequest request) {
         logger.info("Exception: " + request.getDescription(false) + "; message=" + ex.getMessage());
         return CodeMessageResponseBuilder.badRequest(ex.getMessage());

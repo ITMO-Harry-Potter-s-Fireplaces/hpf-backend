@@ -118,10 +118,10 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         User user = getUser(id);
         if (currentUser.getId().equals(user.getId())) {
-            throw new ActionForbiddenException("Not allowed to change your own role.");
+            throw new ActionForbiddenException("Not allowed to change your own role");
         }
         if (!currentUser.getId().equals(0L) && (role.equals(Role.ADMIN) || user.getRole().equals(Role.ADMIN))) {
-            throw new ActionForbiddenException("Not enough permissions to assign or remove admins.");
+            throw new ActionForbiddenException("Not enough permissions to assign or remove admins");
         }
         user.setRole(role);
         return userRepository.save(user);

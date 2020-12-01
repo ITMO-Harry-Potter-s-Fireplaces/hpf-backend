@@ -38,6 +38,6 @@ public class SecurityTokenAspect {
         if (permissionsService.verifyToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN))) {
             return jp.proceed();
         }
-        throw new ActionForbiddenException("Not enough permissions");
+        throw new ActionForbiddenException("Auth token has been expired");
     }
 }
