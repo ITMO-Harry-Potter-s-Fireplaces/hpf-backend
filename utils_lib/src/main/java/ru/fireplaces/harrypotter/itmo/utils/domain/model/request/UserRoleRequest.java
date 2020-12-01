@@ -3,7 +3,6 @@ package ru.fireplaces.harrypotter.itmo.utils.domain.model.request;
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission;
 import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.request.RequestRequiredFields;
 
@@ -11,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link AllowPermission} POJO. Used in request bodies.
+ * Token and {@link Role}s POJO. Used in request bodies for
+ * {@link ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission}
+ * and {@link ru.fireplaces.harrypotter.itmo.utils.annotation.security.DenyPermission}.
  *
  * @author seniorkot
  */
 @Data
-public class AllowPermissionRequest implements RequestRequiredFields {
+public class UserRoleRequest implements RequestRequiredFields {
 
     /**
      * Authorization token.

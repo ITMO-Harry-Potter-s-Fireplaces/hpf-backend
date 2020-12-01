@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-import ru.fireplaces.harrypotter.itmo.utils.domain.model.request.AllowPermissionRequest;
+import ru.fireplaces.harrypotter.itmo.utils.domain.model.request.UserRoleRequest;
 import ru.fireplaces.harrypotter.itmo.utils.domain.model.request.TokenVerificationRequest;
 import ru.fireplaces.harrypotter.itmo.security.service.PermissionsService;
 import ru.fireplaces.harrypotter.itmo.security.service.SecurityService;
@@ -41,7 +41,7 @@ public class PermissionsServiceImpl implements PermissionsService {
     }
 
     @Override
-    public boolean userHasRole(@NonNull AllowPermissionRequest allowedRequest)
+    public boolean userHasRole(@NonNull UserRoleRequest allowedRequest)
             throws ActionForbiddenException {
         return userHasRole(allowedRequest.getToken(), allowedRequest.getRoles());
     }

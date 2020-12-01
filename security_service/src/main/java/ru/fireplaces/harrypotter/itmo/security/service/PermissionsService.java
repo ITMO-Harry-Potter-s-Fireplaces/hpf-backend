@@ -3,7 +3,7 @@ package ru.fireplaces.harrypotter.itmo.security.service;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.security.domain.model.User;
-import ru.fireplaces.harrypotter.itmo.utils.domain.model.request.AllowPermissionRequest;
+import ru.fireplaces.harrypotter.itmo.utils.domain.model.request.UserRoleRequest;
 import ru.fireplaces.harrypotter.itmo.utils.domain.model.request.TokenVerificationRequest;
 import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
@@ -37,7 +37,7 @@ public interface PermissionsService {
      * @return true - user is allowed
      * @throws ActionForbiddenException Token is not valid
      */
-    boolean userHasRole(@NonNull AllowPermissionRequest allowedRequest)
+    boolean userHasRole(@NonNull UserRoleRequest allowedRequest)
             throws ActionForbiddenException;
 
     /**
