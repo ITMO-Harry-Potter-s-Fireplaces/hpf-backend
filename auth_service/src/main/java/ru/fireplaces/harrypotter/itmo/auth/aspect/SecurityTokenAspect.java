@@ -9,37 +9,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.fireplaces.harrypotter.itmo.auth.service.PermissionsService;
 import ru.fireplaces.harrypotter.itmo.utils.Constants;
-import ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission;
+import ru.fireplaces.harrypotter.itmo.utils.annotation.security.TokenVerification;
 import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
 
-import java.util.Arrays;
-
 /**
- * Aspect to handle {@link AllowPermission} annotation.
+ * Aspect to handle {@link TokenVerification} annotation.
  *
  * @author seniorkot
  */
 @Aspect
 @Component
-public class SecurityAllowAspect {
+public class SecurityTokenAspect {
 
     private final PermissionsService permissionsService;
 
     @Autowired
-    public SecurityAllowAspect(PermissionsService permissionsService) {
+    public SecurityTokenAspect(PermissionsService permissionsService) {
         this.permissionsService = permissionsService;
     }
 
-
-    @Pointcut("@annotation(allowPermission)")
-    public void callAt(AllowPermission allowPermission) {
+    @Pointcut("@annotation(tokenVerification)")
+    public void callAt(TokenVerification tokenVerification) {
 
     }
 
-    @Around(value = "callAt(allowPermission)", argNames = "jp,allowPermission")
-    public Object around(ProceedingJoinPoint jp, AllowPermission allowPermission) throws Throwable {
-        if (permissionsService.userHasRole(MDC.get(Constants.KEY_MDC_AUTH_TOKEN),
-                Arrays.asList(allowPermission.roles()))) {
+    @Around(value = "callAt(tokenVerification)", argNames = "jp,tokenVerification")
+    public Object around(ProceedingJoinPoint jp, TokenVerification tokenVerification) throws Throwable {
+        if (permissionsService.verifyToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN))) {
             return jp.proceed();
         }
         throw new ActionForbiddenException("Not enough permissions");

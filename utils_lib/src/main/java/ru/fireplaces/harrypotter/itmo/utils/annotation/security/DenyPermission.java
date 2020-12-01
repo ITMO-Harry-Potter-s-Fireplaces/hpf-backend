@@ -8,15 +8,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation to allow method execution for users
+ * Annotation to restrict method execution to users
  * with specific roles.
  *
  * @author seniorkot
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface AllowPermission {
+public @interface DenyPermission {
 
     Role[] roles();
 }
-

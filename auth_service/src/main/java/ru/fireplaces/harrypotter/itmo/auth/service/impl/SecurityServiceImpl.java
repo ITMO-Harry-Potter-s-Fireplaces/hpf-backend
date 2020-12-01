@@ -86,7 +86,7 @@ public class SecurityServiceImpl implements SecurityService {
             return JWT.create()
                     .withIssuer("ITMO-HPF.SecurityService")
                     .withClaim("id", user.getId())
-                    .withClaim("role", user.getRole().toString())
+                    .withClaim("role", user.getRole().getValue())
                     .withClaim("email", user.getEmail())
                     .withClaim("name", user.getName())
                     .withClaim("surname", user.getSurname())
@@ -119,7 +119,7 @@ public class SecurityServiceImpl implements SecurityService {
         try {
             DecodedJWT jwt = JWT.decode(token);
             User user = userService.getUser(jwt.getClaim("id").asLong());
-            if (user.getRole().toString().equals(jwt.getClaim("role").asString())) {
+            if (user.getRole().getValue().equals(jwt.getClaim("role").asInt())) {
                 return user;
             }
             throw new ActionForbiddenException("Roles don't match");

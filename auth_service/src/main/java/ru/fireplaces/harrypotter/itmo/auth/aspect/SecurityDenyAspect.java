@@ -9,37 +9,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.fireplaces.harrypotter.itmo.auth.service.PermissionsService;
 import ru.fireplaces.harrypotter.itmo.utils.Constants;
-import ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission;
+import ru.fireplaces.harrypotter.itmo.utils.annotation.security.DenyPermission;
 import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
 
 import java.util.Arrays;
 
 /**
- * Aspect to handle {@link AllowPermission} annotation.
+ * Aspect to handle {@link DenyPermission} annotation.
  *
  * @author seniorkot
  */
 @Aspect
 @Component
-public class SecurityAllowAspect {
+public class SecurityDenyAspect {
 
     private final PermissionsService permissionsService;
 
     @Autowired
-    public SecurityAllowAspect(PermissionsService permissionsService) {
+    public SecurityDenyAspect(PermissionsService permissionsService) {
         this.permissionsService = permissionsService;
     }
 
-
-    @Pointcut("@annotation(allowPermission)")
-    public void callAt(AllowPermission allowPermission) {
+    @Pointcut("@annotation(denyPermission)")
+    public void callAt(DenyPermission denyPermission) {
 
     }
 
-    @Around(value = "callAt(allowPermission)", argNames = "jp,allowPermission")
-    public Object around(ProceedingJoinPoint jp, AllowPermission allowPermission) throws Throwable {
-        if (permissionsService.userHasRole(MDC.get(Constants.KEY_MDC_AUTH_TOKEN),
-                Arrays.asList(allowPermission.roles()))) {
+    @Around(value = "callAt(denyPermission)", argNames = "jp,denyPermission")
+    public Object around(ProceedingJoinPoint jp, DenyPermission denyPermission) throws Throwable {
+        if (!permissionsService.userHasRole(MDC.get(Constants.KEY_MDC_AUTH_TOKEN),
+                Arrays.asList(denyPermission.roles()))) {
             return jp.proceed();
         }
         throw new ActionForbiddenException("Not enough permissions");

@@ -101,8 +101,6 @@ public class User implements CopyFromRequest<UserRequest> {
                 ? request.getEmail() : this.email;
         this.password = !StringUtils.isEmpty(request.getPassword())
                 ? request.getPassword() : this.password;
-        this.role = request.getRole() != null
-                ? request.getRole() : this.role;
         this.name = !StringUtils.isEmpty(request.getName())
                 ? request.getName() : this.name;
         this.surname = !StringUtils.isEmpty(request.getSurname())

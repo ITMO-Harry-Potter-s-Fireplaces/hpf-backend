@@ -6,9 +6,19 @@ package ru.fireplaces.harrypotter.itmo.utils.enums;
  * @author seniorkot
  */
 public enum Role {
-    ADMIN,
-    MODERATOR,
-    USER;
+    ADMIN(0),
+    MODERATOR(1),
+    USER(2);
+
+    private final Integer value;
+
+    Role(int value) {
+        this.value = value;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
 
     @Override
     public String toString() {
