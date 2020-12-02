@@ -28,6 +28,17 @@ public class UserRoleRequest implements RequestRequiredFields {
      */
     private List<Role> roles;
 
+    /**
+     * Parametrized constructor for user role verification request.
+     *
+     * @param token Auth token
+     * @param roles User roles
+     */
+    public UserRoleRequest(String token, List<Role> roles) {
+        this.token = token;
+        this.roles = roles;
+    }
+
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();

@@ -20,6 +20,15 @@ public class TokenVerificationRequest implements RequestRequiredFields {
      */
     private String token;
 
+    /**
+     * Parametrized constructor for token verification request.
+     *
+     * @param token Auth token
+     */
+    public TokenVerificationRequest(String token) {
+        this.token = token;
+    }
+
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
