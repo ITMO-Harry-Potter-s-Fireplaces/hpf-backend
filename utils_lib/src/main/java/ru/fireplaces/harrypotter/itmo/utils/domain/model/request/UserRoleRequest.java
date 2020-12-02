@@ -11,8 +11,7 @@ import java.util.List;
 
 /**
  * Token and {@link Role}s POJO. Used in request bodies for
- * {@link ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission}
- * and {@link ru.fireplaces.harrypotter.itmo.utils.annotation.security.DenyPermission}.
+ * {@link ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission}.
  *
  * @author seniorkot
  */
