@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.security.config.SecurityKeysProperties;
+import ru.fireplaces.harrypotter.itmo.security.domain.dao.UserRepository;
 import ru.fireplaces.harrypotter.itmo.security.domain.model.User;
 import ru.fireplaces.harrypotter.itmo.security.service.SecurityService;
 import ru.fireplaces.harrypotter.itmo.security.service.UserService;
@@ -50,15 +51,15 @@ public class SecurityServiceImpl implements SecurityService {
 
     private static final Logger logger = LogManager.getLogger(SecurityServiceImpl.class);
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
 
     @Autowired
     public SecurityServiceImpl(SecurityKeysProperties properties,
-                               UserService userService) {
-        this.userService = userService;
+                               UserRepository userRepository) {
+        this.userRepository = userRepository;
 
         // Read public and private keys
         RSAPublicKey publicKey = null;
@@ -115,10 +116,12 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public User authorizeToken(@NonNull String token) throws ActionForbiddenException {
+    public User authorizeToken(@NonNull String token)
+            throws ActionForbiddenException, EntityNotFoundException {
         try {
             DecodedJWT jwt = JWT.decode(token);
-            User user = userService.getUser(jwt.getClaim("id").asLong());
+            User user = userRepository.findById(jwt.getClaim("id").asLong())
+                    .orElseThrow(() -> new ActionForbiddenException("IDs don't match"));
             if (user.getRole().getValue().equals(jwt.getClaim("role").asInt())) {
                 return user;
             }

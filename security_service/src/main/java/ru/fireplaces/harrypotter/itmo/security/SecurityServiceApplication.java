@@ -16,7 +16,7 @@ import ru.fireplaces.harrypotter.itmo.security.config.SecurityKeysProperties;
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableConfigurationProperties({SecurityKeysProperties.class})
-public class AuthServiceApplication {
+public class SecurityServiceApplication {
 
     /**
      * Main method.<br>
@@ -25,6 +25,6 @@ public class AuthServiceApplication {
      * @param args App arguments
      */
     public static void main(String[] args) {
-        SpringApplication.run(AuthServiceApplication.class, args);
+        SpringApplication.run(SecurityServiceApplication.class, args);
     }
 }

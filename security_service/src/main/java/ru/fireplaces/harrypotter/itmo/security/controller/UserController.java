@@ -167,7 +167,7 @@ public class UserController {
      * @return <b>Response code</b>: 204
      */
     @AllowPermission(roles = {Role.ADMIN})
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> deleteUser(@RequestHeader(value = "Authorization") String token,
                                                   @PathVariable Long id) {
         logger.info("deleteUser: id=" + id + "; token=" + token);
