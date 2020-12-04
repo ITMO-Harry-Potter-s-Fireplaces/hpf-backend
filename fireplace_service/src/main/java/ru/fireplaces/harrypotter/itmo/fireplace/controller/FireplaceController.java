@@ -13,7 +13,9 @@ import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.CoordsRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.FireplaceRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.service.FireplaceService;
+import ru.fireplaces.harrypotter.itmo.utils.annotation.security.AllowPermission;
 import ru.fireplaces.harrypotter.itmo.utils.annotation.security.TokenVerification;
+import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponse;
 import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponseBuilder;
 import ru.fireplaces.harrypotter.itmo.utils.response.PageResponse;
@@ -92,7 +94,7 @@ public class FireplaceController {
      * @param fireplaceRequest Fireplace params
      * @return @return <b>Response code</b>: 201
      */
-    @TokenVerification
+    @AllowPermission(roles = {Role.USER})
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<URI> createFireplace(@RequestHeader(value = "Authorization") String token,
                                                     @RequestBody FireplaceRequest fireplaceRequest,
@@ -115,7 +117,7 @@ public class FireplaceController {
      * @param copy Copy or update params
      * @return <b>Response code</b>: 204
      */
-    @TokenVerification
+    @AllowPermission(roles = {Role.USER})
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> updateFireplace(@RequestHeader(value = "Authorization") String token,

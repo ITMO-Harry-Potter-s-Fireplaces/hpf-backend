@@ -61,7 +61,6 @@ public class Fireplace implements CopyFromRequest<FireplaceRequest> {
         this.lng = request.getLng();
         this.lat = request.getLat();
         this.description = request.getDescription();
-        this.ownerId = request.getOwnerId();
     }
 
     @Override
@@ -72,8 +71,6 @@ public class Fireplace implements CopyFromRequest<FireplaceRequest> {
                 ? request.getLat() : this.lat;
         this.description = request.getDescription() != null
                 ? request.getDescription() : this.description;
-        this.ownerId = request.getOwnerId() != null
-                ? request.getOwnerId() : this.ownerId;
     }
 
     @Override

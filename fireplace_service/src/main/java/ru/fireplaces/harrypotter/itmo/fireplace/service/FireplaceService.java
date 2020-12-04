@@ -10,6 +10,7 @@ import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.CoordsReque
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.FireplaceRequest;
 import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
+import ru.fireplaces.harrypotter.itmo.utils.exception.EntityAlreadyExistsException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
 
 /**
@@ -28,9 +29,10 @@ public interface FireplaceService {
      * @param coords Latitude and longitude
      * @return {@link Page} with queered {@link Fireplace} entities
      * @throws BadInputDataException Bad coords
+     * @throws EntityAlreadyExistsException {@link Fireplace} with such lng and lat already exists
      */
-    Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable,
-                                      @Nullable CoordsRequest coords) throws BadInputDataException;
+    Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable, @Nullable CoordsRequest coords)
+            throws BadInputDataException, EntityAlreadyExistsException;
 
     /**
      * Returns a {@link Fireplace} entity by ID.

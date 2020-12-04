@@ -31,11 +31,6 @@ public class FireplaceRequest implements RequestRequiredFields {
      */
     private String description;
 
-    /**
-     * Fireplace owner user ID.
-     */
-    private Long ownerId;
-
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
@@ -45,9 +40,6 @@ public class FireplaceRequest implements RequestRequiredFields {
         if (this.lat == null) {
             list.add("lat");
         }
-        if (this.ownerId == null) {
-            list.add("ownerId");
-        }
         return list;
     }
 
@@ -55,7 +47,6 @@ public class FireplaceRequest implements RequestRequiredFields {
     public String toString() {
         return "FireplaceRequest(lng=" + this.getLng()
                 + ", lat=" + this.getLat()
-                + ", description=" + this.getDescription()
-                + ", ownerId=" + this.getOwnerId() + ")";
+                + ", description=" + this.getDescription() + ")";
     }
 }

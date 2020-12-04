@@ -16,6 +16,23 @@ import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 @Repository
 public interface FireplaceRepository extends JpaRepository<Fireplace, Long> {
 
+    /**
+     * Fetches all nearest {@link Fireplace} entities by coords.
+     *
+     * @param pageable {@link Pageable} params
+     * @param lng Longitude
+     * @param lat Latitude
+     * @return {@link Page} with fetched {@link Fireplace} entities
+     */
     @Query("SELECT f FROM Fireplace f ORDER BY SQRT((f.lng * f.lng + :lng) + (f.lat * f.lat + :lat))")
     Page<Fireplace> findAllNearest(Pageable pageable, @Param("lng") Float lng, @Param("lat") Float lat);
+
+    /**
+     * Returns bool value of {@link Fireplace} existence by its coords.
+     *
+     * @param lng Longitude
+     * @param lat Latitude
+     * @return true - {@link Fireplace} exists
+     */
+    boolean existsByLngAndLat(Float lng, Float lat);
 }
