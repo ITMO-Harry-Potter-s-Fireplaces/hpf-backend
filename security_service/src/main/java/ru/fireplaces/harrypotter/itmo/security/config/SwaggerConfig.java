@@ -20,14 +20,14 @@ public class SwaggerConfig {
     @Bean
     public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("hpf_auth_service")
+                .groupName("hpf_security_service")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("ru.fireplaces.harrypotter.itmo.auth"))
+                .apis(RequestHandlerSelectors.basePackage("ru.fireplaces.harrypotter.itmo.security"))
                 .build()
                 .useDefaultResponseMessages(false)
                 .apiInfo(new ApiInfoBuilder()
-                        .title("HPF Auth Service")
-                        .description("Harry Potter's Fireplaces authentication service API v.0.1")
+                        .title("HPF Security Service")
+                        .description("Harry Potter's Fireplaces security service API v.1.0")
                         .build()
                 );
     }
