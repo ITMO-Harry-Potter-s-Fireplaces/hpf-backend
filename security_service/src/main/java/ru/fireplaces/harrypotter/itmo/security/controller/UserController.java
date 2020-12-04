@@ -109,6 +109,7 @@ public class UserController {
      *
      * @param token Authorization token
      * @param user User params
+     * @param copy Copy or update params
      * @return <b>Response code</b>: 204
      */
     @TokenVerification
@@ -164,6 +165,7 @@ public class UserController {
      * Deletes {@link User} entity by ID.
      *
      * @param token Authorization token
+     * @param id User ID
      * @return <b>Response code</b>: 204
      */
     @AllowPermission(roles = {Role.ADMIN})

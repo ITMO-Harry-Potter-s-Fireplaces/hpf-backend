@@ -7,12 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
+import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.CoordsRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.FireplaceRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.service.FireplaceService;
+import ru.fireplaces.harrypotter.itmo.utils.annotation.security.TokenVerification;
 import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponse;
 import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponseBuilder;
 import ru.fireplaces.harrypotter.itmo.utils.response.PageResponse;
+
+import java.net.URI;
 
 /**
  * REST controller for fireplaces.
@@ -44,17 +50,18 @@ public class FireplaceController {
      *
      * @param token Authorization token
      * @param pageable Pageable params
-     * @param fireplaceParams Filter: latitude and longitude
+     * @param coords Filter: latitude and longitude
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link Fireplace} objects
      */
+    @TokenVerification
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponse<Fireplace> getFireplaces(@RequestHeader(value = "Authorization") String token,
                                                  @PageableDefault(size = 20, sort = "id") Pageable pageable,
-                                                 @RequestBody(required = false) FireplaceRequest fireplaceParams) {
-        logger.info("getFireplaces: pageable=" + pageable + "; params=" + fireplaceParams + "; token=" + token);
+                                                 @RequestBody(required = false) CoordsRequest coords) {
+        logger.info("getFireplaces: pageable=" + pageable + "; coords=" + coords + "; token=" + token);
         PageResponse<Fireplace> response =
-                CodeMessageResponseBuilder.page(fireplaceService.getFireplacesPage(pageable, fireplaceParams));
+                CodeMessageResponseBuilder.page(fireplaceService.getFireplacesPage(pageable, coords));
         logger.info("getFireplaces: response=" + response.getBody());
         return response;
     }
@@ -67,6 +74,7 @@ public class FireplaceController {
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link Fireplace} object
      */
+    @TokenVerification
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<Fireplace> getFireplace(@RequestHeader(value = "Authorization") String token,
                                                        @PathVariable Long id) {
@@ -74,6 +82,69 @@ public class FireplaceController {
         CodeMessageResponse<Fireplace> response =
                 CodeMessageResponseBuilder.ok(fireplaceService.getFireplace(id));
         logger.info("getFireplace: response=" + response.getBody());
+        return response;
+    }
+
+    /**
+     * Creates new {@link Fireplace} entity.
+     *
+     * @param token Authorization token
+     * @param fireplaceRequest Fireplace params
+     * @return @return <b>Response code</b>: 201
+     */
+    @TokenVerification
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CodeMessageResponse<URI> createFireplace(@RequestHeader(value = "Authorization") String token,
+                                                    @RequestBody FireplaceRequest fireplaceRequest,
+                                                    UriComponentsBuilder uriComponentsBuilder) {
+        logger.info("createFireplace: fireplaceRequest=" + fireplaceRequest + "; token=" + token);
+        final long fireplaceId = fireplaceService.createFireplace(fireplaceRequest).getId();
+        UriComponents uriComponents =
+                uriComponentsBuilder.path(CONTROLLER_PATH + "/{id}").buildAndExpand(fireplaceId);
+        CodeMessageResponse<URI> response = CodeMessageResponseBuilder.created(uriComponents.toUri());
+        logger.info("createFireplace: response=" + response.getBody());
+        return response;
+    }
+
+    /**
+     * Updates {@link Fireplace} entity by ID.
+     *
+     * @param token Authorization token
+     * @param id Fireplace ID
+     * @param fireplaceRequest Fireplace params
+     * @param copy Copy or update params
+     * @return <b>Response code</b>: 204
+     */
+    @TokenVerification
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public CodeMessageResponse<String> updateFireplace(@RequestHeader(value = "Authorization") String token,
+                                                       @PathVariable Long id,
+                                                       @RequestBody FireplaceRequest fireplaceRequest,
+                                                       @RequestParam(defaultValue = "true") Boolean copy) {
+        logger.info("updateFireplace: id=" + id + "; fireplaceRequest=" + fireplaceRequest
+                + "; copy=" + copy + "; token=" + token);
+        fireplaceService.updateFireplace(id, fireplaceRequest, copy);
+        CodeMessageResponse<String> response = CodeMessageResponseBuilder.noContent();
+        logger.info("updateFireplace: response=" + response.getBody());
+        return response;
+    }
+
+    /**
+     * Deletes {@link Fireplace} entity by ID.
+     *
+     * @param token Authorization token
+     * @param id Fireplace ID
+     * @return <b>Response code</b>: 204
+     */
+    @TokenVerification
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CodeMessageResponse<String> deleteFireplace(@RequestHeader(value = "Authorization") String token,
+                                                       @PathVariable Long id) {
+        logger.info("deleteFireplace: id=" + id + "; token=" + token);
+        fireplaceService.deleteFireplace(id);
+        CodeMessageResponse<String> response = CodeMessageResponseBuilder.noContent();
+        logger.info("deleteFireplace: response=" + response.getBody());
         return response;
     }
 }

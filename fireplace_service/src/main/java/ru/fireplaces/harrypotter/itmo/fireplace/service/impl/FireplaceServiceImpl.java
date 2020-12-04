@@ -5,11 +5,14 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.dao.FireplaceRepository;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
+import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.CoordsRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.FireplaceRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.service.FireplaceService;
+import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
 
@@ -35,21 +38,41 @@ public class FireplaceServiceImpl implements FireplaceService {
 
     @Override
     public Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable,
-                                             FireplaceRequest fireplaceParams) {
-        if (fireplaceParams == null) {
+                                             @Nullable CoordsRequest coords) {
+        if (coords == null) {
             return fireplaceRepository.findAll(pageable);
         }
-        List<String> blankFields = fireplaceParams.getBlankRequiredFields();
+        List<String> blankFields = coords.getBlankRequiredFields();
         if (blankFields.size() > 0) {
             throw new BadInputDataException(FireplaceRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        return fireplaceRepository.findAllNearest(pageable, fireplaceParams.getLng(), fireplaceParams.getLat());
+        return fireplaceRepository.findAllNearest(pageable, coords.getLng(), coords.getLat());
     }
 
     @Override
     public Fireplace getFireplace(@NonNull Long id) throws EntityNotFoundException {
         return fireplaceRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Fireplace.class, id));
+    }
+
+    @Override
+    public Fireplace createFireplace(@NonNull FireplaceRequest fireplaceRequest) throws BadInputDataException {
+        // TODO: Implement
+        return null;
+    }
+
+    @Override
+    public Fireplace updateFireplace(@NonNull Long id,
+                                     @NonNull FireplaceRequest fireplaceRequest,
+                                     @NonNull Boolean copy)
+            throws EntityNotFoundException, BadInputDataException, ActionForbiddenException {
+        // TODO: Implement
+        return null;
+    }
+
+    @Override
+    public void deleteFireplace(@NonNull Long id) throws EntityNotFoundException, ActionForbiddenException {
+        // TODO: Implement
     }
 }
