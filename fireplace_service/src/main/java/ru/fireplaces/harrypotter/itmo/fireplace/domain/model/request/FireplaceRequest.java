@@ -1,6 +1,7 @@
 package ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request;
 
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.request.RequestRequiredFields;
 
 import java.util.ArrayList;
@@ -25,6 +26,16 @@ public class FireplaceRequest implements RequestRequiredFields {
      */
     private Float lat;
 
+    /**
+     * Fireplace description.
+     */
+    private String description;
+
+    /**
+     * Fireplace owner user ID.
+     */
+    private Long ownerId;
+
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
@@ -34,12 +45,17 @@ public class FireplaceRequest implements RequestRequiredFields {
         if (this.lat == null) {
             list.add("lat");
         }
+        if (this.ownerId == null) {
+            list.add("ownerId");
+        }
         return list;
     }
 
     @Override
     public String toString() {
         return "FireplaceRequest(lng=" + this.getLng()
-                + ", lat=" + this.getLat() + ")";
+                + ", lat=" + this.getLat()
+                + ", description=" + this.getDescription()
+                + ", ownerId=" + this.getOwnerId() + ")";
     }
 }

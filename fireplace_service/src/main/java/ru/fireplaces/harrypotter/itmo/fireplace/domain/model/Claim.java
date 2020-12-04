@@ -1,8 +1,11 @@
 package ru.fireplaces.harrypotter.itmo.fireplace.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import ru.fireplaces.harrypotter.itmo.fireplace.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.ClaimRequest;
+import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.response.User;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
 import javax.persistence.*;
@@ -26,6 +29,12 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     private Long id;
 
     /**
+     * Claim status.
+     */
+    @Column(nullable = false)
+    private ClaimStatus status;
+
+    /**
      * Departure fireplace.
      */
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -33,7 +42,7 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     private Fireplace departure;
 
     /**
-     * Departure arrival.
+     * Arrival fireplace.
      */
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "arrival_id")
@@ -47,10 +56,21 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     private LocalDateTime departureTime;
 
     /**
+     * User data.
+     */
+    @Transient
+    private User user;
+
+    /**
      * User ID.
      */
+    @JsonIgnore
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    public Claim() {
+        this.status = ClaimStatus.CREATED;
+    }
 
     @Override
     public void copy(ClaimRequest request) {
@@ -72,6 +92,7 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     @Override
     public String toString() {
         return "Claim(id=" + this.getId()
+                + ", status=" + this.getStatus()
                 + ", departureId=" + this.getDeparture().getId()
                 + ", arrivalId=" + this.getArrival().getId()
                 + ", departureTime=" + this.getDepartureTime()
