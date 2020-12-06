@@ -27,6 +27,10 @@ public class CodeMessage<T> implements Serializable {
      */
     private T message;
 
+    public CodeMessage() {
+
+    }
+
     /**
      * Parametrized constructor for code-message response.
      *
@@ -35,6 +39,17 @@ public class CodeMessage<T> implements Serializable {
      */
     public CodeMessage(HttpStatus code, T message) {
         this.code = code.value();
+        this.message = message;
+    }
+
+    /**
+     * Parametrized constructor for code-message response.
+     *
+     * @param code HTTP Status Code value
+     * @param message Response message
+     */
+    public CodeMessage(Integer code, T message) {
+        this.code = code;
         this.message = message;
     }
 }

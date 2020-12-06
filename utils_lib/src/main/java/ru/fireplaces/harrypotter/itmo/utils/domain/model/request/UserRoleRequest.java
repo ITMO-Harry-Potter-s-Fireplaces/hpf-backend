@@ -28,6 +28,10 @@ public class UserRoleRequest implements RequestRequiredFields {
      */
     private List<Role> roles;
 
+    public UserRoleRequest() {
+
+    }
+
     /**
      * Parametrized constructor for user role verification request.
      *

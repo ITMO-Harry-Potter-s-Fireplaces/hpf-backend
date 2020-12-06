@@ -20,6 +20,10 @@ public class TokenVerificationRequest implements RequestRequiredFields {
      */
     private String token;
 
+    public TokenVerificationRequest() {
+
+    }
+
     /**
      * Parametrized constructor for token verification request.
      *

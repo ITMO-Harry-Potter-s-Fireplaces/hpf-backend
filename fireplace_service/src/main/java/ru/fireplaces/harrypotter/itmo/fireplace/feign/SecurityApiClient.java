@@ -15,16 +15,16 @@ import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessage;
 @FeignClient("security")
 public interface SecurityApiClient {
 
-    @PostMapping("/security/permissions/role")
+    @PostMapping("/permissions/role")
     CodeMessage<String> checkPermissionsAllowed(@RequestBody UserRoleRequest request);
 
-    @PostMapping("/security/permissions/token")
+    @PostMapping("/permissions/token")
     CodeMessage<String> verifyToken(@RequestBody TokenVerificationRequest request);
 
-    @GetMapping("/security/users/{id}")
+    @GetMapping("/users/{id}")
     CodeMessage<User> getUser(@RequestHeader("Authorization") String token,
                               @PathVariable Long id);
 
-    @GetMapping("/security/users/current")
+    @GetMapping("/users/current")
     CodeMessage<User> getCurrentUser(@RequestHeader("Authorization") String token);
 }

@@ -34,7 +34,7 @@ public class PermissionsServiceImpl implements PermissionsService {
     @Override
     public boolean userHasRole(@NonNull String token,
                                @NonNull List<Role> roles) throws ActionForbiddenException {
-        if (verifyToken(token)) {
+        if (!verifyToken(token)) {
             throw new ActionForbiddenException("Auth token has been expired");
         }
         return roles.contains(securityService.authorizeToken(token).getRole());
