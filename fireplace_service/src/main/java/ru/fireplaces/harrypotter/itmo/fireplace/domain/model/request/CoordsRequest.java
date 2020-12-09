@@ -17,23 +17,51 @@ import java.util.List;
 public class CoordsRequest implements RequestRequiredFields {
 
     /**
+     * User latitude.
+     */
+    private Float lat;
+
+    /**
      * User longitude.
      */
     private Float lng;
 
     /**
-     * User latitude.
+     * Search radius.
      */
-    private Float lat;
+    private Double radius;
+
+    public CoordsRequest() {
+
+    }
+
+    /**
+     * Parametrized constructor for requests.
+     *
+     * @param lng Longitude
+     * @param lat Latitude
+     */
+    public CoordsRequest(Float lat, Float lng, Double radius) {
+        this.lat = lat;
+        this.lng = lng;
+        this.radius = radius;
+    }
+
+    public boolean isEmpty() {
+        return this.lat == null && this.lng == null && this.radius == null;
+    }
 
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
+        if (this.lat == null) {
+            list.add("lat");
+        }
         if (this.lng == null) {
             list.add("lng");
         }
-        if (this.lat == null) {
-            list.add("lat");
+        if (this.radius == null) {
+            list.add("radius");
         }
         return list;
     }

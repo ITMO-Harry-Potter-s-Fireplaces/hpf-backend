@@ -3,7 +3,6 @@ package ru.fireplaces.harrypotter.itmo.fireplace.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.CoordsRequest;
@@ -26,12 +25,12 @@ public interface FireplaceService {
      * Filters used: user latitude and longitude.
      *
      * @param pageable {@link Pageable} params
-     * @param coords Latitude and longitude
+     * @param coords Latitude and longitude with search radius
      * @return {@link Page} with queered {@link Fireplace} entities
      * @throws BadInputDataException Bad coords
      * @throws EntityAlreadyExistsException {@link Fireplace} with such lng and lat already exists
      */
-    Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable, @Nullable CoordsRequest coords)
+    Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable, @NonNull CoordsRequest coords)
             throws BadInputDataException, EntityAlreadyExistsException;
 
     /**

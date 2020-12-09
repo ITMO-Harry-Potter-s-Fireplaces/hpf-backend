@@ -17,22 +17,31 @@ import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 public interface FireplaceRepository extends JpaRepository<Fireplace, Long> {
 
     /**
-     * Fetches all nearest {@link Fireplace} entities by coords.
+     * Fetches all nearest {@link Fireplace} entities by coordinates.
      *
      * @param pageable {@link Pageable} params
-     * @param lng Longitude
      * @param lat Latitude
+     * @param lng Longitude
+     * @param radius Search radius
      * @return {@link Page} with fetched {@link Fireplace} entities
      */
-    @Query("SELECT f FROM Fireplace f ORDER BY SQRT((f.lng * f.lng + :lng) + (f.lat * f.lat + :lat))")
-    Page<Fireplace> findAllNearest(Pageable pageable, @Param("lng") Float lng, @Param("lat") Float lat);
+    @Query("SELECT f FROM Fireplace f WHERE (6371.0 * FUNCTION('acos', " +
+            "FUNCTION('cos', FUNCTION('radians', :lat)) *" +
+            "FUNCTION('cos', FUNCTION('radians', f.lat)) *" +
+            "FUNCTION('cos', FUNCTION('radians', f.lng) - FUNCTION('radians', :lng)) +" +
+            "FUNCTION('sin', FUNCTION('radians', :lat)) * " +
+            "FUNCTION('sin', FUNCTION('radians', f.lat)))) <= :radius")
+    Page<Fireplace> findAllNearest(Pageable pageable,
+                                   @Param("lat") Float lat,
+                                   @Param("lng") Float lng,
+                                   @Param("radius") Double radius);
 
     /**
      * Returns bool value of {@link Fireplace} existence by its coords.
      *
-     * @param lng Longitude
      * @param lat Latitude
+     * @param lng Longitude
      * @return true - {@link Fireplace} exists
      */
-    boolean existsByLngAndLat(Float lng, Float lat);
+    boolean existsByLatAndLng(Float lat, Float lng);
 }

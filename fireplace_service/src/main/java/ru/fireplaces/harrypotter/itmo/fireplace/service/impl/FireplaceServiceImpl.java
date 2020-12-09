@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.dao.FireplaceRepository;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
@@ -47,8 +46,8 @@ public class FireplaceServiceImpl implements FireplaceService {
 
     @Override
     public Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable,
-                                             @Nullable CoordsRequest coords) {
-        if (coords == null) {
+                                             @NonNull CoordsRequest coords) {
+        if (coords.isEmpty()) {
             return fireplaceRepository.findAll(pageable)
                     .map(fireplace -> {
                         fireplace.setOwner(securityApiClient
@@ -61,7 +60,7 @@ public class FireplaceServiceImpl implements FireplaceService {
             throw new BadInputDataException(FireplaceRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        return fireplaceRepository.findAllNearest(pageable, coords.getLng(), coords.getLat())
+        return fireplaceRepository.findAllNearest(pageable, coords.getLat(), coords.getLng(), coords.getRadius())
                 .map(fireplace -> {
                     fireplace.setOwner(securityApiClient
                             .getUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN), fireplace.getOwnerId()).getMessage());
@@ -88,9 +87,9 @@ public class FireplaceServiceImpl implements FireplaceService {
             throw new BadInputDataException(FireplaceRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        if (fireplaceRepository.existsByLngAndLat(fireplaceRequest.getLng(), fireplaceRequest.getLat())) {
-            throw new EntityAlreadyExistsException("Fireplace with coords (" + fireplaceRequest.getLng()
-                    + ", " + fireplaceRequest.getLat() + ") already exists");
+        if (fireplaceRepository.existsByLatAndLng(fireplaceRequest.getLat(), fireplaceRequest.getLng())) {
+            throw new EntityAlreadyExistsException("Fireplace with coords (" + fireplaceRequest.getLat()
+                    + ", " + fireplaceRequest.getLng() + ") already exists");
         }
         User currentUser = securityApiClient.getCurrentUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN)).getMessage();
         Fireplace fireplace = new Fireplace();
@@ -120,7 +119,7 @@ public class FireplaceServiceImpl implements FireplaceService {
         else {
             fireplace.update(fireplaceRequest);
         }
-        if (fireplaceRepository.existsByLngAndLat(fireplace.getLng(), fireplace.getLat())) {
+        if (fireplaceRepository.existsByLatAndLng(fireplaceRequest.getLat(), fireplaceRequest.getLng())) {
             throw new EntityAlreadyExistsException("Fireplace with coords (" + fireplace.getLng()
                     + ", " + fireplace.getLat() + ") already exists");
         }

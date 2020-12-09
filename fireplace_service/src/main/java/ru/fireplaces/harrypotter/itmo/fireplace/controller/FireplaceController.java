@@ -52,18 +52,23 @@ public class FireplaceController {
      *
      * @param token Authorization token
      * @param pageable Pageable params
-     * @param coords Filter: latitude and longitude
+     * @param lat Latitude (required if lng is not null)
+     * @param lng Longitude (required if lat is not null)
+     * @param radius Search radius (required if lat and lng are not null)
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link Fireplace} objects
      */
     @TokenVerification
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponse<Fireplace> getFireplaces(@RequestHeader(value = "Authorization") String token,
                                                  @PageableDefault(size = 20, sort = "id") Pageable pageable,
-                                                 @RequestBody(required = false) CoordsRequest coords) {
-        logger.info("getFireplaces: pageable=" + pageable + "; coords=" + coords + "; token=" + token);
-        PageResponse<Fireplace> response =
-                CodeMessageResponseBuilder.page(fireplaceService.getFireplacesPage(pageable, coords));
+                                                 @RequestParam(required = false) Float lat,
+                                                 @RequestParam(required = false) Float lng,
+                                                 @RequestParam(required = false) Double radius) {
+        logger.info("getFireplaces: pageable=" + pageable + "; coords=(" + lat + ", " + lng
+                + "; radius=" + radius + "); token=" + token);
+        PageResponse<Fireplace> response = CodeMessageResponseBuilder.page(
+                fireplaceService.getFireplacesPage(pageable, new CoordsRequest(lat, lng, radius)));
         logger.info("getFireplaces: response=" + response.getBody());
         return response;
     }

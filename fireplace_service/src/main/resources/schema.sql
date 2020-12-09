@@ -5,8 +5,8 @@ CREATE SEQUENCE claims_id_seq MINVALUE 0 START 0 INCREMENT 1;
 -- Create tables --
 CREATE TABLE fireplaces(
     id integer DEFAULT nextval('public.fireplaces_id_seq'::regclass) CONSTRAINT fireplaces_pkey PRIMARY KEY,
-    lng float NOT NULL,
     lat float NOT NULL,
+    lng float NOT NULL,
     description varchar(511),
     owner_id integer NOT NULL
 );
