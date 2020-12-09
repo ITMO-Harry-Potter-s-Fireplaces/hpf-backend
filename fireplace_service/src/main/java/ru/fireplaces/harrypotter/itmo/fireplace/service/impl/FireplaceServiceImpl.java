@@ -1,6 +1,5 @@
 package ru.fireplaces.harrypotter.itmo.fireplace.service.impl;
 
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -11,11 +10,7 @@ import ru.fireplaces.harrypotter.itmo.fireplace.domain.dao.FireplaceRepository;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.CoordsRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.FireplaceRequest;
-import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.response.User;
-import ru.fireplaces.harrypotter.itmo.fireplace.feign.SecurityApiClient;
 import ru.fireplaces.harrypotter.itmo.fireplace.service.FireplaceService;
-import ru.fireplaces.harrypotter.itmo.utils.Constants;
-import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
 import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityAlreadyExistsException;
@@ -35,48 +30,29 @@ public class FireplaceServiceImpl implements FireplaceService {
     public static final String SERVICE_VALUE = "FireplaceServiceImpl";
 
     private final FireplaceRepository fireplaceRepository;
-    private final SecurityApiClient securityApiClient;
 
     @Autowired
-    public FireplaceServiceImpl(FireplaceRepository fireplaceRepository,
-                                SecurityApiClient securityApiClient) {
+    public FireplaceServiceImpl(FireplaceRepository fireplaceRepository) {
         this.fireplaceRepository = fireplaceRepository;
-        this.securityApiClient = securityApiClient;
     }
 
     @Override
     public Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable,
                                              @NonNull CoordsRequest coords) {
         if (coords.isEmpty()) {
-            return fireplaceRepository.findAll(pageable)
-                    .map(fireplace -> {
-                        fireplace.setOwner(securityApiClient
-                                .getUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN), fireplace.getOwnerId()).getMessage());
-                        return fireplace;
-                    });
+            return fireplaceRepository.findAll(pageable);
         }
         List<String> blankFields = coords.getBlankRequiredFields();
         if (blankFields.size() > 0) {
             throw new BadInputDataException(FireplaceRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        return fireplaceRepository.findAllNearest(pageable, coords.getLat(), coords.getLng(), coords.getRadius())
-                .map(fireplace -> {
-                    fireplace.setOwner(securityApiClient
-                            .getUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN), fireplace.getOwnerId()).getMessage());
-            return fireplace;
-        });
+        return fireplaceRepository.findAllNearest(pageable, coords.getLat(), coords.getLng(), coords.getRadius());
     }
 
     @Override
     public Fireplace getFireplace(@NonNull Long id) throws EntityNotFoundException {
-        return fireplaceRepository.findById(id)
-                .map(fireplace -> {
-                    fireplace.setOwner(securityApiClient
-                            .getUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN), fireplace.getOwnerId()).getMessage());
-                    return fireplace;
-                })
-                .orElseThrow(() -> new EntityNotFoundException(Fireplace.class, id));
+        return fireplaceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Fireplace.class, id));
     }
 
     @Override
@@ -91,10 +67,8 @@ public class FireplaceServiceImpl implements FireplaceService {
             throw new EntityAlreadyExistsException("Fireplace with coords (" + fireplaceRequest.getLat()
                     + ", " + fireplaceRequest.getLng() + ") already exists");
         }
-        User currentUser = securityApiClient.getCurrentUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN)).getMessage();
         Fireplace fireplace = new Fireplace();
         fireplace.copy(fireplaceRequest);
-        fireplace.setOwnerId(currentUser.getId());
         return fireplaceRepository.save(fireplace);
     }
 
@@ -103,11 +77,7 @@ public class FireplaceServiceImpl implements FireplaceService {
                                      @NonNull FireplaceRequest fireplaceRequest,
                                      @NonNull Boolean copy)
             throws EntityNotFoundException, BadInputDataException, ActionForbiddenException {
-        User currentUser = securityApiClient.getCurrentUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN)).getMessage();
         Fireplace fireplace = getFireplace(id);
-        if (!fireplace.getOwnerId().equals(currentUser.getId())) {
-            throw new ActionForbiddenException("Not enough permissions to update fireplace");
-        }
         if (copy) {
             List<String> blankFields = fireplaceRequest.getBlankRequiredFields(); // Get blank fields
             if (blankFields.size() > 0) {
@@ -128,13 +98,6 @@ public class FireplaceServiceImpl implements FireplaceService {
 
     @Override
     public void deleteFireplace(@NonNull Long id) throws EntityNotFoundException, ActionForbiddenException {
-        User currentUser = securityApiClient.getCurrentUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN)).getMessage();
-        Fireplace fireplace = getFireplace(id);
-        if (!fireplace.getOwnerId().equals(currentUser.getId())
-                || !currentUser.getRole().equals(Role.MODERATOR)
-                && !currentUser.getRole().equals(Role.ADMIN)) {
-            throw new ActionForbiddenException("Not enough permissions to delete fireplace");
-        }
-        fireplaceRepository.delete(fireplace);
+        fireplaceRepository.delete(getFireplace(id));
     }
 }

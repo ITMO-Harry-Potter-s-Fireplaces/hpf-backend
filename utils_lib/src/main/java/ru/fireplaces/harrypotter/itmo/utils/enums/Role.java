@@ -8,7 +8,8 @@ package ru.fireplaces.harrypotter.itmo.utils.enums;
 public enum Role {
     ADMIN(0),
     MODERATOR(1),
-    USER(2);
+    MINISTER(2),
+    USER(3);
 
     private final Integer value;
 
@@ -27,6 +28,8 @@ public enum Role {
                 return "Admin";
             case MODERATOR:
                 return "Moderator";
+            case MINISTER:
+                return "Minister";
             case USER:
                 return "User";
             default:

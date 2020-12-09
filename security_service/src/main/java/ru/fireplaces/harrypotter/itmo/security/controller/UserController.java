@@ -54,7 +54,7 @@ public class UserController {
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link User} objects
      */
-    @AllowPermission(roles = {Role.ADMIN, Role.MODERATOR})
+    @AllowPermission(roles = {Role.ADMIN, Role.MODERATOR, Role.MINISTER})
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponse<User> getAllUsers(@RequestHeader(value = "Authorization") String token,
                                           @PageableDefault(size = 20, sort = "id") Pageable pageable,
@@ -131,7 +131,7 @@ public class UserController {
      * @param token Authorization token
      * @return <b>Response code</b>: 204
      */
-    @TokenVerification
+    @AllowPermission(roles = {Role.MINISTER, Role.USER})
     @DeleteMapping(value = "/current", produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> deleteCurrentUser(@RequestHeader(value = "Authorization") String token) {
         logger.info("deleteCurrentUser: token=" + token);
@@ -162,13 +162,13 @@ public class UserController {
     }
 
     /**
-     * Deletes {@link User} entity by ID.
+     * Changes {@link User} active status to the opposite by ID.
      *
      * @param token Authorization token
      * @param id User ID
      * @return <b>Response code</b>: 204
      */
-    @AllowPermission(roles = {Role.ADMIN})
+    @AllowPermission(roles = {Role.ADMIN, Role.MODERATOR})
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> deleteUser(@RequestHeader(value = "Authorization") String token,
                                                   @PathVariable Long id) {

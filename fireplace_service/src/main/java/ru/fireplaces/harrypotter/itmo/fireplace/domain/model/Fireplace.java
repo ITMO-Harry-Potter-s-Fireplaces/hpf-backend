@@ -1,9 +1,7 @@
 package ru.fireplaces.harrypotter.itmo.fireplace.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.FireplaceRequest;
-import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.response.User;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
 import javax.persistence.*;
@@ -43,19 +41,6 @@ public class Fireplace implements CopyFromRequest<FireplaceRequest> {
     @Column(length = 511)
     private String description;
 
-    /**
-     * Fireplace owner.
-     */
-    @Transient
-    private User owner;
-
-    /**
-     * Fireplace owner user ID.
-     */
-    @JsonIgnore
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
-
     @Override
     public void copy(FireplaceRequest request) {
         this.lng = request.getLng();
@@ -78,7 +63,6 @@ public class Fireplace implements CopyFromRequest<FireplaceRequest> {
         return "Fireplace(id=" + this.getId()
                 + ", lng=" + this.getLng()
                 + ", lat=" + this.getLat()
-                + ", description=" + this.getDescription()
-                + ", ownerId=" + this.getOwnerId() + ")";
+                + ", description=" + this.getDescription() + ")";
     }
 }

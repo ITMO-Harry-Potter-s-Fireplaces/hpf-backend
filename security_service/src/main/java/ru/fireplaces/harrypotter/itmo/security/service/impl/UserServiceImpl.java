@@ -14,10 +14,7 @@ import ru.fireplaces.harrypotter.itmo.security.service.SecurityService;
 import ru.fireplaces.harrypotter.itmo.security.service.UserService;
 import ru.fireplaces.harrypotter.itmo.utils.Constants;
 import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
-import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
-import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
-import ru.fireplaces.harrypotter.itmo.utils.exception.EntityAlreadyExistsException;
-import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
+import ru.fireplaces.harrypotter.itmo.utils.exception.*;
 
 import java.util.List;
 
@@ -82,7 +79,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(@NonNull Long id) throws EntityNotFoundException {
         User user = getUser(id);
-        user.setActive(false);
+        User currentUser = getCurrentUser();
+        if (!currentUser.getId().equals(0L) && currentUser.getRole().getValue() <= user.getRole().getValue()) {
+            throw new ActionForbiddenException("Not enough permissions to change this active status");
+        }
+        user.setActive(!user.getActive());
         userRepository.save(user);
     }
 
@@ -108,8 +109,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteCurrentUser() {
         User user = getCurrentUser();
-        user.setActive(false);
-        userRepository.save(user);
+        userRepository.delete(user);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
         User currentUser = getCurrentUser();
         User user = getUser(id);
         if (currentUser.getId().equals(user.getId())) {
-            throw new ActionForbiddenException("Not allowed to change your own role");
+            throw new ActionInapplicableException("Not allowed to change your own role");
         }
         if (!currentUser.getId().equals(0L) && (role.equals(Role.ADMIN) || user.getRole().equals(Role.ADMIN))) {
             throw new ActionForbiddenException("Not enough permissions to assign or remove admins");

@@ -99,7 +99,7 @@ public class FireplaceController {
      * @param fireplaceRequest Fireplace params
      * @return @return <b>Response code</b>: 201
      */
-    @AllowPermission(roles = {Role.USER})
+    @AllowPermission(roles = {Role.MINISTER})
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<URI> createFireplace(@RequestHeader(value = "Authorization") String token,
                                                     @RequestBody FireplaceRequest fireplaceRequest,
@@ -122,7 +122,7 @@ public class FireplaceController {
      * @param copy Copy or update params
      * @return <b>Response code</b>: 204
      */
-    @AllowPermission(roles = {Role.USER})
+    @AllowPermission(roles = {Role.MINISTER})
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> updateFireplace(@RequestHeader(value = "Authorization") String token,
@@ -144,7 +144,7 @@ public class FireplaceController {
      * @param id Fireplace ID
      * @return <b>Response code</b>: 204
      */
-    @TokenVerification
+    @AllowPermission(roles = {Role.MINISTER})
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> deleteFireplace(@RequestHeader(value = "Authorization") String token,
                                                        @PathVariable Long id) {

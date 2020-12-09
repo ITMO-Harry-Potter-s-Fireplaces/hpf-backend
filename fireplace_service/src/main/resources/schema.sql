@@ -7,8 +7,7 @@ CREATE TABLE fireplaces(
     id integer DEFAULT nextval('public.fireplaces_id_seq'::regclass) CONSTRAINT fireplaces_pkey PRIMARY KEY,
     lat float NOT NULL,
     lng float NOT NULL,
-    description varchar(511),
-    owner_id integer NOT NULL
+    description varchar(511)
 );
 
 CREATE TABLE claims(
