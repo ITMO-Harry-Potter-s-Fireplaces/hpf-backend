@@ -25,6 +25,15 @@ public interface ClaimRepository extends JpaRepository<Claim, Long> {
     Page<Claim> findAllByStatus(Pageable pageable, ClaimStatus status);
 
     /**
+     * Fetches all {@link Claim} entities by user ID.
+     *
+     * @param pageable {@link Pageable} params
+     * @param userId User ID
+     * @return {@link Page} with fetched {@link Claim} entities
+     */
+    Page<Claim> findAllByUserId(Pageable pageable, Long userId);
+
+    /**
      * Fetches all {@link Claim} entities by status and user ID.
      *
      * @param pageable {@link Pageable} params

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Claim;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.ClaimRequest;
+import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.ActionInapplicableException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
@@ -81,7 +82,8 @@ public interface ClaimService {
      * @return Updated {@link Claim} entity
      * @throws EntityNotFoundException Not Found Exception
      * @throws ActionInapplicableException Cannot change claim status
+     * @throws ActionForbiddenException When try to change not your own claim status
      */
     Claim completeClaim(@NonNull Long id, @NonNull Boolean cancel)
-            throws EntityNotFoundException, ActionInapplicableException;
+            throws EntityNotFoundException, ActionInapplicableException, ActionForbiddenException;
 }

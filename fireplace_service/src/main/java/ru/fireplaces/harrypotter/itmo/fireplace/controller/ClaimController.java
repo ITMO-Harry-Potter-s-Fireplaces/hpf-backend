@@ -57,7 +57,6 @@ public class ClaimController {
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link Claim} objects
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     @AllowPermission(roles = {Role.ADMIN, Role.MODERATOR, Role.MINISTER})
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponse<Claim> getClaims(@RequestHeader(value = "Authorization") String token,
