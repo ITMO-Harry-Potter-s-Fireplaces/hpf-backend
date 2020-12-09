@@ -8,8 +8,8 @@ package ru.fireplaces.harrypotter.itmo.fireplace.domain.enums;
 public enum ClaimStatus {
     CREATED(0),
     APPROVED(1),
-    COMPLETED(2),
-    DENIED(3),
+    REJECTED(2),
+    COMPLETED(3),
     CANCELLED(4);
 
     private final Integer value;
@@ -29,10 +29,10 @@ public enum ClaimStatus {
                 return "Created";
             case APPROVED:
                 return "Approved";
+            case REJECTED:
+                return "Rejected";
             case COMPLETED:
                 return "Completed";
-            case DENIED:
-                return "Denied";
             case CANCELLED:
                 return "Cancelled";
             default:

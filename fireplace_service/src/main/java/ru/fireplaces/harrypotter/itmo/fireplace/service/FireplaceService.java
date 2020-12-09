@@ -28,10 +28,9 @@ public interface FireplaceService {
      * @param coords Latitude and longitude with search radius
      * @return {@link Page} with queered {@link Fireplace} entities
      * @throws BadInputDataException Bad coords
-     * @throws EntityAlreadyExistsException {@link Fireplace} with such lng and lat already exists
      */
     Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable, @NonNull CoordsRequest coords)
-            throws BadInputDataException, EntityAlreadyExistsException;
+            throws BadInputDataException;
 
     /**
      * Returns a {@link Fireplace} entity by ID.
@@ -48,8 +47,10 @@ public interface FireplaceService {
      * @param fireplaceRequest Fireplace params
      * @return Created {@link Fireplace} entity
      * @throws BadInputDataException Bad input data
+     * @throws EntityAlreadyExistsException {@link Fireplace} with such lat and lng already exists
      */
-    Fireplace createFireplace(@NonNull FireplaceRequest fireplaceRequest) throws BadInputDataException;
+    Fireplace createFireplace(@NonNull FireplaceRequest fireplaceRequest)
+            throws BadInputDataException, EntityAlreadyExistsException;
 
     /**
      * Updates {@link Fireplace} entity by ID.
@@ -60,17 +61,16 @@ public interface FireplaceService {
      * @return Updated {@link Fireplace} entity
      * @throws EntityNotFoundException Not Found Exception
      * @throws BadInputDataException Bad input data
-     * @throws ActionForbiddenException Not enough permissions to update
+     * @throws EntityAlreadyExistsException {@link Fireplace} with such lat and lng already exists
      */
     Fireplace updateFireplace(@NonNull Long id, @NonNull FireplaceRequest fireplaceRequest, @NonNull Boolean copy)
-            throws EntityNotFoundException, BadInputDataException, ActionForbiddenException;
+            throws EntityNotFoundException, BadInputDataException, EntityAlreadyExistsException;
 
     /**
      * Deletes {@link Fireplace} entity by ID.
      *
      * @param id Fireplace ID
      * @throws EntityNotFoundException Not Found Exception
-     * @throws ActionForbiddenException Not enough permissions to delete
      */
-    void deleteFireplace(@NonNull Long id) throws EntityNotFoundException, ActionForbiddenException;
+    void deleteFireplace(@NonNull Long id) throws EntityNotFoundException;
 }

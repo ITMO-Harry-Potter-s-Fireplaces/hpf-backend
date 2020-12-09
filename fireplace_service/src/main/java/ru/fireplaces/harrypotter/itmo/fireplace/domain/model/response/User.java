@@ -17,7 +17,6 @@ public class User {
     /**
      * User ID.
      */
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Long id;
 
     /**

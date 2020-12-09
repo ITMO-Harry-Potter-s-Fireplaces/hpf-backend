@@ -76,7 +76,7 @@ public class FireplaceServiceImpl implements FireplaceService {
     public Fireplace updateFireplace(@NonNull Long id,
                                      @NonNull FireplaceRequest fireplaceRequest,
                                      @NonNull Boolean copy)
-            throws EntityNotFoundException, BadInputDataException, ActionForbiddenException {
+            throws EntityNotFoundException, BadInputDataException, EntityAlreadyExistsException {
         Fireplace fireplace = getFireplace(id);
         if (copy) {
             List<String> blankFields = fireplaceRequest.getBlankRequiredFields(); // Get blank fields
@@ -97,7 +97,7 @@ public class FireplaceServiceImpl implements FireplaceService {
     }
 
     @Override
-    public void deleteFireplace(@NonNull Long id) throws EntityNotFoundException, ActionForbiddenException {
+    public void deleteFireplace(@NonNull Long id) throws EntityNotFoundException {
         fireplaceRepository.delete(getFireplace(id));
     }
 }

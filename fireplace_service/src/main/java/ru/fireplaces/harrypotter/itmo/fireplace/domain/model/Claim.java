@@ -2,7 +2,10 @@ package ru.fireplaces.harrypotter.itmo.fireplace.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.response.User;
@@ -52,7 +55,7 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
      * Departure date and time.
      */
     @JsonFormat(pattern="dd.MM.yyyy HH:mm")
-    @Column(name = "departure_time")
+    @Column(name = "departure_time", nullable = false)
     private LocalDateTime departureTime;
 
     /**
@@ -67,6 +70,22 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     @JsonIgnore
     @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    /**
+     * Date and time of creation.
+     */
+    @Setter(AccessLevel.NONE)
+    @JsonFormat(pattern="dd.MM.yyyy HH:mm")
+    @Column(name = "created", nullable = false)
+    private LocalDateTime created;
+
+    /**
+     * Date and time of last modification.
+     */
+    @Setter(AccessLevel.NONE)
+    @JsonFormat(pattern="dd.MM.yyyy HH:mm")
+    @Column(name = "modified", nullable = false)
+    private LocalDateTime modified;
 
     public Claim() {
         this.status = ClaimStatus.CREATED;
@@ -97,5 +116,22 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
                 + ", arrivalId=" + this.getArrival().getId()
                 + ", departureTime=" + this.getDepartureTime()
                 + ", userId=" + this.getUserId() + ")";
+    }
+
+    /**
+     * Pre Persist private method to set up creation time
+     */
+    @PrePersist
+    private void prePersist() {
+        this.created = LocalDateTime.now();
+        this.modified = created;
+    }
+
+    /**
+     * Pre Update private method to set up last modified time
+     */
+    @PreUpdate
+    private void preUpdate() {
+        this.modified = LocalDateTime.now();
     }
 }

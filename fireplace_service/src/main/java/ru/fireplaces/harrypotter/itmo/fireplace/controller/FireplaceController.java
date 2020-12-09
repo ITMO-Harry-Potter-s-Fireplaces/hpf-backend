@@ -47,13 +47,12 @@ public class FireplaceController {
 
     /**
      * Returns a page with list of {@link Fireplace} entities.<br>
-     * Default page: 0; size: 20; sort: 'id'<br>
-     * With no fireplaceParams returns a page of first entities.
+     * Default page: 0; size: 20; sort: 'id'
      *
      * @param token Authorization token
      * @param pageable Pageable params
-     * @param lat Latitude (required if lng is not null)
-     * @param lng Longitude (required if lat is not null)
+     * @param lat Latitude (required if lng and radius are not null)
+     * @param lng Longitude (required if lat and radius are not null)
      * @param radius Search radius (required if lat and lng are not null)
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link Fireplace} objects
