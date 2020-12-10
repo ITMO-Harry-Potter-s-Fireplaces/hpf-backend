@@ -4,7 +4,7 @@
         <Property name="LOG_PATTERN">%date{yyyy-MM-dd HH:mm:ss.SSS} %p -- [%c{1}]: %m%n</Property>
         <Property name="LOG_SUFFIX">dev</Property>
         <Property name="LOG_PREFIX">security</Property>
-        <Property name="LOG_PATH">/itmo_hpf/logs</Property>
+        <Property name="LOG_PATH">/srv/itmo_hpf/logs</Property>
     </Properties>
 
     <Appenders>
