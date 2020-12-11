@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @Entity
-@Table(name = "claim")
+@Table(name = "claims")
 public class Claim implements CopyFromRequest<ClaimRequest> {
 
     /**

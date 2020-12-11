@@ -117,8 +117,10 @@ public class ClaimServiceImpl implements ClaimService {
         }
         request.setArrival(fireplaceService.getFireplace(request.getArrivalId()));
         request.setDeparture(fireplaceService.getFireplace(request.getDepartureId()));
+        User currentUser = securityApiClient.getCurrentUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN)).getMessage();
         Claim claim = new Claim();
         claim.copy(request);
+        claim.setUserId(currentUser.getId());
         return claimRepository.save(claim);
     }
 
