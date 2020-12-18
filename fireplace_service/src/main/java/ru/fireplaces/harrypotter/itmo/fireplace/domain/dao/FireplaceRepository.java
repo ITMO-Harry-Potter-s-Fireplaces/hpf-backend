@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 
+import java.util.Optional;
+
 /**
  * {@link Fireplace} JPA repository interface.
  *
@@ -44,4 +46,13 @@ public interface FireplaceRepository extends JpaRepository<Fireplace, Long> {
      * @return true - {@link Fireplace} exists
      */
     boolean existsByLatAndLng(Float lat, Float lng);
+
+    /**
+     * Returns {@link Fireplace} entity by its coords.
+     *
+     * @param lat Latitude
+     * @param lng Longitude
+     * @return fetched {@link Fireplace} entity
+     */
+    Optional<Fireplace> findByLatAndLng(Float lat, Float lng);
 }

@@ -6,6 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Claim;
+import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * {@link Claim} JPA repository interface.
@@ -42,4 +46,22 @@ public interface ClaimRepository extends JpaRepository<Claim, Long> {
      * @return {@link Page} with fetched {@link Claim} entities
      */
     Page<Claim> findAllByStatusAndUserId(Pageable pageable, ClaimStatus status, Long userId);
+
+    /**
+     * Fetches {@link Claim} by departure time and {@link Fireplace}.
+     *
+     * @param departureTime Departure date and time
+     * @param departure Departure fireplace
+     * @return Fetched {@link Claim}
+     */
+    Optional<Claim> findByDepartureTimeAndDeparture(LocalDateTime departureTime, Fireplace departure);
+
+    /**
+     * Fetches {@link Claim} by departure time and destination {@link Fireplace}.
+     *
+     * @param departureTime Departure date and time
+     * @param arrival Arrival fireplace
+     * @return Fetched {@link Claim}
+     */
+    Optional<Claim> findByDepartureTimeAndArrival(LocalDateTime departureTime, Fireplace arrival);
 }
