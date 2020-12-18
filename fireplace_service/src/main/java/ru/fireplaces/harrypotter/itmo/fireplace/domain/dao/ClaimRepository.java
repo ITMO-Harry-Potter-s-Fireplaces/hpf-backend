@@ -64,4 +64,24 @@ public interface ClaimRepository extends JpaRepository<Claim, Long> {
      * @return Fetched {@link Claim}
      */
     Optional<Claim> findByDepartureTimeAndArrival(LocalDateTime departureTime, Fireplace arrival);
+
+    /**
+     * Returns bool value of {@link Claim} existence by
+     * departure time and destination {@link Fireplace}.
+     *
+     * @param departureTime Departure date and time
+     * @param departure Departure fireplace
+     * @return
+     */
+    boolean existsByDepartureTimeAndDeparture(LocalDateTime departureTime, Fireplace departure);
+
+    /**
+     * Returns bool value of {@link Claim} existence by
+     * departure time and destination {@link Fireplace}.
+     *
+     * @param departureTime Departure date and time
+     * @param arrival Arrival fireplace
+     * @return
+     */
+    boolean existsByDepartureTimeAndArrival(LocalDateTime departureTime, Fireplace arrival);
 }

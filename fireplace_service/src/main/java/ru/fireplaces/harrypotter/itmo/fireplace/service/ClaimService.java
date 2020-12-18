@@ -59,8 +59,10 @@ public interface ClaimService {
      * @param request Claim params
      * @return Created {@link Claim} entity
      * @throws BadInputDataException Bad input data
+     * @throws ActionInapplicableException One of the fireplaces is reserved
      */
-    Claim createClaim(@NonNull ClaimRequest request) throws BadInputDataException;
+    Claim createClaim(@NonNull ClaimRequest request)
+            throws BadInputDataException, ActionInapplicableException;
 
     /**
      * Updates {@link Claim} status to APPROVED or REJECTED by ID.

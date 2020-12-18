@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.dao.ClaimRepository;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Claim;
+import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.fireplace.domain.model.response.User;
 import ru.fireplaces.harrypotter.itmo.fireplace.feign.SecurityApiClient;
@@ -109,14 +110,28 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     @Override
-    public Claim createClaim(@NonNull ClaimRequest request) throws BadInputDataException {
+    public Claim createClaim(@NonNull ClaimRequest request)
+            throws BadInputDataException, ActionInapplicableException {
         List<String> blankFields = request.getBlankRequiredFields(); // Get blank fields
         if (blankFields.size() > 0) {
             throw new BadInputDataException(ClaimRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        request.setArrival(fireplaceService.getFireplace(request.getArrivalId()));
-        request.setDeparture(fireplaceService.getFireplace(request.getDepartureId()));
+        Fireplace departureFp = fireplaceService.getFireplace(request.getDepartureId());
+        Fireplace arrivalFp = fireplaceService.getFireplace(request.getArrivalId());
+        if (departureFp.equals(arrivalFp)) {
+            throw new ActionInapplicableException("Cannot use same fireplaces as departure and destination points");
+        }
+        else if (claimRepository.existsByDepartureTimeAndDeparture(request.getDepartureTime(), departureFp)
+                || claimRepository.existsByDepartureTimeAndArrival(request.getDepartureTime(), departureFp)) {
+            throw new ActionInapplicableException("Firaplace with ID " + request.getDepartureId() + "is already reserved.");
+        }
+        else if (claimRepository.existsByDepartureTimeAndDeparture(request.getDepartureTime(), arrivalFp)
+                || claimRepository.existsByDepartureTimeAndArrival(request.getDepartureTime(), arrivalFp)) {
+            throw new ActionInapplicableException("Firaplace with ID " + request.getArrivalId() + "is already reserved.");
+        }
+        request.setDeparture(departureFp);
+        request.setArrival(arrivalFp);
         User currentUser = securityApiClient.getCurrentUser(MDC.get(Constants.KEY_MDC_AUTH_TOKEN)).getMessage();
         Claim claim = new Claim();
         claim.copy(request);
