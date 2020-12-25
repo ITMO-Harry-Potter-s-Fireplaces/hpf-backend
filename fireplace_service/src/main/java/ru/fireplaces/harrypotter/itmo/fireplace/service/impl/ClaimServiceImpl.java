@@ -124,11 +124,11 @@ public class ClaimServiceImpl implements ClaimService {
         }
         else if (claimRepository.existsByDepartureTimeAndDeparture(request.getDepartureTime(), departureFp)
                 || claimRepository.existsByDepartureTimeAndArrival(request.getDepartureTime(), departureFp)) {
-            throw new ActionInapplicableException("Firaplace with ID " + request.getDepartureId() + "is already reserved.");
+            throw new ActionInapplicableException("Firaplace with ID " + request.getDepartureId() + " is already reserved.");
         }
         else if (claimRepository.existsByDepartureTimeAndDeparture(request.getDepartureTime(), arrivalFp)
                 || claimRepository.existsByDepartureTimeAndArrival(request.getDepartureTime(), arrivalFp)) {
-            throw new ActionInapplicableException("Firaplace with ID " + request.getArrivalId() + "is already reserved.");
+            throw new ActionInapplicableException("Firaplace with ID " + request.getArrivalId() + " is already reserved.");
         }
         request.setDeparture(departureFp);
         request.setArrival(arrivalFp);
