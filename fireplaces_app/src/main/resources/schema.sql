@@ -29,7 +29,7 @@ CREATE TABLE claims(
     departure_id integer NOT NULL CONSTRAINT dep_claim_fireplace_fk REFERENCES fireplaces(id),
     arrival_id integer NOT NULL CONSTRAINT arr_claim_fireplace_fk REFERENCES fireplaces(id),
     departure_time timestamp NOT NULL,
-    user_id integer NOT NULL,
+    user_id integer NOT NULL CONSTRAINT claim_user_fk REFERENCES users(id),
     created timestamp NOT NULL,
     modified timestamp NOT NULL
 );
