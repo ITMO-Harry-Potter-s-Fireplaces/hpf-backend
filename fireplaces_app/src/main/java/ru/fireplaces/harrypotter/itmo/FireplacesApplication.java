@@ -2,6 +2,8 @@ package ru.fireplaces.harrypotter.itmo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import ru.fireplaces.harrypotter.itmo.config.SecurityKeysProperties;
 
 /**
  * Application main class.
@@ -9,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author seniorkot
  */
 @SpringBootApplication
+@EnableConfigurationProperties({SecurityKeysProperties.class})
 public class FireplacesApplication {
 
     /**

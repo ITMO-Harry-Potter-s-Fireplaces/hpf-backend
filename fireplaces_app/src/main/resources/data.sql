@@ -7,7 +7,6 @@ values ('minister', 'minister', 'minister', 'minister@minister.com', '202cb962ac
 insert into users (name, surname, middle_name, email, password, role, date_birth, active)
 values ('user', 'user', 'user', 'user@user.com', '202cb962ac59075b964b07152d234b70', 3, '2020-01-01', true);
 
-
 insert into fireplaces (lat, lng, description) values (59.8631629507745, 30.3195093199611, 'test');
 insert into fireplaces (lat, lng, description) values (59.9191264465338, 30.2953982725739, 'test');
 insert into fireplaces (lat, lng, description) values (59.9266642119421, 30.3459401428699, 'test');
