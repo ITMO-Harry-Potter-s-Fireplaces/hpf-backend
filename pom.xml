@@ -25,10 +25,6 @@
     </properties>
 
     <modules>
-        <module>eureka_server</module>
-        <module>proxy_server</module>
-        <module>security_service</module>
-        <module>fireplace_service</module>
         <module>utils_lib</module>
         <module>fireplaces_app</module>
     </modules>
