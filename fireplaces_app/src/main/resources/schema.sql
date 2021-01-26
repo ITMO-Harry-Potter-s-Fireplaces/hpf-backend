@@ -2,6 +2,7 @@
 CREATE SEQUENCE users_id_seq MINVALUE 0 START 0 INCREMENT 1;
 CREATE SEQUENCE fireplaces_id_seq MINVALUE 0 START 0 INCREMENT 1;
 CREATE SEQUENCE claims_id_seq MINVALUE 0 START 0 INCREMENT 1;
+CREATE SEQUENCE auth_logs_id_seq MINVALUE 0 START 0 INCREMENT 1;
 
 -- Create tables --
 CREATE TABLE users(
@@ -32,4 +33,12 @@ CREATE TABLE claims(
     user_id integer NOT NULL CONSTRAINT claim_user_fk REFERENCES users(id),
     created timestamp NOT NULL,
     modified timestamp NOT NULL
+);
+
+CREATE TABLE auth_logs(
+    id integer DEFAULT nextval('public.auth_logs_id_seq'::regclass) CONSTRAINT auth_logs_pkey PRIMARY KEY,
+    user_id integer NOT NULL CONSTRAINT auth_log_user_fk REFERENCES users(id),
+    date_time timestamp NOT NULL,
+    address varchar(127) NOT NULL,
+    success boolean
 );
