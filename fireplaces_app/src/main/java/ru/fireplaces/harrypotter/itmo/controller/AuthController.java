@@ -101,7 +101,7 @@ public class AuthController {
                                                    @PageableDefault(size = 20, sort = "id") Pageable pageable) {
         logger.info("getCurrentHistory: pageable=" + pageable + "; token=" + token);
         PageResponse<AuthLog> response =
-                CodeMessageResponseBuilder.page(authService.getCurrentAuthHistory(pageable, token));
+                CodeMessageResponseBuilder.page(authService.getCurrentAuthHistory(pageable));
         logger.info("getCurrentHistory: response=" + response.getBody());
         return response;
     }

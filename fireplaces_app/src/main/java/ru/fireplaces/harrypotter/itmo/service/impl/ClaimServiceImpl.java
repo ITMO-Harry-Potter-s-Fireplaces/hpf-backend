@@ -8,20 +8,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import ru.fireplaces.harrypotter.itmo.domain.dao.ClaimReportRepository;
 import ru.fireplaces.harrypotter.itmo.domain.dao.ClaimRepository;
 import ru.fireplaces.harrypotter.itmo.domain.enums.ClaimStatus;
-import ru.fireplaces.harrypotter.itmo.domain.model.Claim;
-import ru.fireplaces.harrypotter.itmo.domain.model.Fireplace;
-import ru.fireplaces.harrypotter.itmo.domain.model.User;
+import ru.fireplaces.harrypotter.itmo.domain.model.*;
+import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimReportRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.service.ClaimService;
 import ru.fireplaces.harrypotter.itmo.service.FireplaceService;
 import ru.fireplaces.harrypotter.itmo.service.SecurityService;
 import ru.fireplaces.harrypotter.itmo.utils.Constants;
-import ru.fireplaces.harrypotter.itmo.utils.exception.ActionForbiddenException;
-import ru.fireplaces.harrypotter.itmo.utils.exception.ActionInapplicableException;
-import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
-import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
+import ru.fireplaces.harrypotter.itmo.utils.enums.Role;
+import ru.fireplaces.harrypotter.itmo.utils.exception.*;
 
 import java.util.List;
 
@@ -37,14 +35,17 @@ public class ClaimServiceImpl implements ClaimService {
     public static final String SERVICE_VALUE = "ClaimServiceImpl";
 
     private final ClaimRepository claimRepository;
+    private final ClaimReportRepository claimReportRepository;
     private final SecurityService securityService;
     private final FireplaceService fireplaceService;
 
     @Autowired
     public ClaimServiceImpl(ClaimRepository claimRepository,
+                            ClaimReportRepository claimReportRepository,
                             SecurityService securityService,
                             FireplaceService fireplaceService) {
         this.claimRepository = claimRepository;
+        this.claimReportRepository = claimReportRepository;
         this.securityService = securityService;
         this.fireplaceService = fireplaceService;
     }
@@ -52,39 +53,68 @@ public class ClaimServiceImpl implements ClaimService {
     @Override
     public Page<Claim> getClaimsPage(@NonNull Pageable pageable,
                                      @Nullable ClaimStatus status,
+                                     @NonNull Boolean include,
                                      @Nullable Long userId) throws EntityNotFoundException {
+        Page<Claim> claimsPage;
         if (userId == null) {
             if (status == null) {
-                return claimRepository.findAll(pageable);
+                claimsPage = claimRepository.findAll(pageable);
             }
             else {
-                return claimRepository.findAllByStatus(pageable, status);
+                claimsPage = include ? claimRepository.findAllByStatus(pageable, status)
+                        : claimRepository.findAllByStatusNot(pageable, status);
             }
         }
         else {
             if (status == null) {
-                return claimRepository.findAllByUserId(pageable, userId);
+                claimsPage = claimRepository.findAllByUserId(pageable, userId);
             }
             else {
-                return claimRepository.findAllByStatusAndUserId(pageable, status, userId);
+                claimsPage = include ? claimRepository.findAllByStatusAndUserId(pageable, status, userId)
+                        : claimRepository.findAllByStatusNotAndUserId(pageable, status, userId);
             }
         }
+        claimsPage.map(claim -> {
+            claim.setDeparture(new Coordinates(claim.getDepartureLat(), claim.getDepartureLng()));
+            claim.setArrival(new Coordinates(claim.getArrivalLat(), claim.getArrivalLng()));
+            return claim;
+        });
+        return claimsPage;
     }
 
     @Override
     public Page<Claim> getCurrentClaimsPage(@NonNull Pageable pageable,
-                                            @Nullable ClaimStatus status) {
+                                            @Nullable ClaimStatus status,
+                                            @NonNull Boolean include) {
         User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
+        Page<Claim> claimsPage;
         if (status == null) {
-            return claimRepository.findAllByUserId(pageable, currentUser.getId());
+            claimsPage = claimRepository.findAllByUserId(pageable, currentUser.getId());
         }
-        return claimRepository.findAllByStatusAndUserId(pageable, status, currentUser.getId());
+        else {
+            claimsPage = include ? claimRepository.findAllByStatusAndUserId(pageable, status, currentUser.getId())
+                    : claimRepository.findAllByStatusNotAndUserId(pageable, status, currentUser.getId());
+        }
+        claimsPage.map(claim -> {
+            claim.setDeparture(new Coordinates(claim.getDepartureLat(), claim.getDepartureLng()));
+            claim.setArrival(new Coordinates(claim.getArrivalLat(), claim.getArrivalLng()));
+            return claim;
+        });
+        return claimsPage;
     }
 
     @Override
-    public Claim getClaim(@NonNull Long id) throws EntityNotFoundException {
-        return claimRepository.findById(id)
+    public Claim getClaim(@NonNull Long id)
+            throws EntityNotFoundException, ActionForbiddenException {
+        Claim claim = claimRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Claim.class, id));
+        User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
+        if (currentUser.getRole().equals(Role.USER) && !claim.getUser().equals(currentUser)) {
+            throw new ActionForbiddenException("Not allowed to get other user's claim");
+        }
+        claim.setDeparture(new Coordinates(claim.getDepartureLat(), claim.getDepartureLng()));
+        claim.setArrival(new Coordinates(claim.getArrivalLat(), claim.getArrivalLng()));
+        return claim;
     }
 
     @Override
@@ -95,21 +125,6 @@ public class ClaimServiceImpl implements ClaimService {
             throw new BadInputDataException(ClaimRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        Fireplace departureFp = fireplaceService.getFireplace(request.getDepartureId());
-        Fireplace arrivalFp = fireplaceService.getFireplace(request.getArrivalId());
-        if (departureFp.equals(arrivalFp)) {
-            throw new ActionInapplicableException("Cannot use same fireplaces as departure and destination points");
-        }
-        else if (claimRepository.existsByDepartureTimeAndDeparture(request.getDepartureTime(), departureFp)
-                || claimRepository.existsByDepartureTimeAndArrival(request.getDepartureTime(), departureFp)) {
-            throw new ActionInapplicableException("Firaplace with ID " + request.getDepartureId() + " is already reserved.");
-        }
-        else if (claimRepository.existsByDepartureTimeAndDeparture(request.getDepartureTime(), arrivalFp)
-                || claimRepository.existsByDepartureTimeAndArrival(request.getDepartureTime(), arrivalFp)) {
-            throw new ActionInapplicableException("Firaplace with ID " + request.getArrivalId() + " is already reserved.");
-        }
-        request.setDeparture(departureFp);
-        request.setArrival(arrivalFp);
         User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
         Claim claim = new Claim();
         claim.copy(request);
@@ -118,31 +133,78 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     @Override
-    public Claim approveClaim(@NonNull Long id, @NonNull Boolean approve)
-            throws EntityNotFoundException, ActionInapplicableException {
+    public ClaimReport reportClaim(@NonNull Long id, @Nullable ClaimReportRequest message)
+            throws EntityNotFoundException {
         Claim claim = getClaim(id);
-        if (claim.getStatus().equals(ClaimStatus.CREATED)) {
-            claim.setStatus(approve ? ClaimStatus.APPROVED : ClaimStatus.REJECTED);
-            return claimRepository.save(claim);
+        User reporter = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
+        if (claimReportRepository.existsByClaimAndReporter(claim, reporter)) {
+            throw new ActionInapplicableException("You have already reported claim with ID " + id);
         }
-        throw new ActionInapplicableException("Cannot change status of claim with status " + claim.getStatus());
+        ClaimReport report = new ClaimReport();
+        report.setClaim(claim);
+        report.setReporter(reporter);
+        if (message != null) {
+            report.setMessage(message.getMessage());
+        }
+        claim.setReportsCount(claim.getReportsCount() + 1L);
+        return claimReportRepository.save(report);
     }
 
     @Override
-    public Claim completeClaim(@NonNull Long id, @NonNull Boolean cancel)
+    public Claim approveClaim(@NonNull Long id,
+                              @NonNull Long departureId,
+                              @NonNull Long arrivalId) throws EntityNotFoundException, ActionInapplicableException {
+        Claim claim = getClaim(id);
+        if (claim.getStatus().equals(ClaimStatus.CREATED)) {
+            Fireplace departure = fireplaceService.getFireplace(departureId);
+            Fireplace arrival = fireplaceService.getFireplace(arrivalId);
+            claim.setDepartureFireplace(departure);
+            claim.setArrivalFireplace(arrival);
+            claim.setStatus(ClaimStatus.APPROVED);
+            return claimRepository.save(claim);
+        }
+        throw new ActionInapplicableException("Cannot approve claim with status " + claim.getStatus());
+    }
+
+    @Override
+    public Claim cancelRejectClaim(@NonNull Long id)
             throws EntityNotFoundException, ActionInapplicableException, ActionForbiddenException {
         User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
         Claim claim = getClaim(id);
-        if (!claim.getUser().equals(currentUser)) {
-            throw new ActionForbiddenException("Cannot complete not your own claim");
+        if (claim.getUser().equals(currentUser)) {
+            if (claim.getStatus().equals(ClaimStatus.CREATED) || claim.getStatus().equals(ClaimStatus.APPROVED)) {
+                claim.setStatus(ClaimStatus.CANCELLED);
+            }
+            else {
+                throw new ActionInapplicableException("Cannot cancel claim with status " + claim.getStatus());
+            }
         }
-        if (cancel && claim.getStatus().equals(ClaimStatus.REJECTED)) {
-            throw new ActionInapplicableException("Cannot cancel rejected claim");
+        else if (currentUser.getRole().equals(Role.ADMIN) || currentUser.getRole().equals(Role.MODERATOR)) {
+            if (claim.getStatus().equals(ClaimStatus.CREATED)) {
+                claim.setStatus(ClaimStatus.REJECTED);
+            }
+            else {
+                throw new ActionInapplicableException("Cannot reject claim with status " + claim.getStatus());
+            }
         }
-        else if (!cancel && !claim.getStatus().equals(ClaimStatus.APPROVED)) {
-            throw new ActionInapplicableException("Cannot complete not approved claim");
+        else {
+            throw new ActionForbiddenException("Cannot proceed not your own claim");
         }
-        claim.setStatus(cancel ? ClaimStatus.CANCELLED : ClaimStatus.COMPLETED);
         return claimRepository.save(claim);
+    }
+
+    @Override
+    public Claim completeClaim(@NonNull Long id)
+            throws EntityNotFoundException, ActionForbiddenException, ActionInapplicableException {
+        User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
+        Claim claim = getClaim(id);
+        if (claim.getUser().equals(currentUser)) {
+            if (claim.getStatus().equals(ClaimStatus.APPROVED)) {
+                claim.setStatus(ClaimStatus.COMPLETED);
+                return claimRepository.save(claim);
+            }
+            throw new ActionInapplicableException("Cannot complete claim with status " + claim.getStatus());
+        }
+        throw new ActionForbiddenException("Cannot complete not your own claim");
     }
 }

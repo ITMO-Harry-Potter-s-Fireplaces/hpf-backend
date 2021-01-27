@@ -22,6 +22,7 @@ public class AuthLog {
     /**
      * Log ID.
      */
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

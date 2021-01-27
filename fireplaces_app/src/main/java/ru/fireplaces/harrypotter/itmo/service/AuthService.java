@@ -65,9 +65,7 @@ public interface AuthService {
      * Returns a page with {@link AuthLog} entities of current user.
      *
      * @param pageable Pageable params
-     * @param token Auth token
      * @return {@link Page} with queered {@link AuthLog} entities
      */
-    Page<AuthLog> getCurrentAuthHistory(@NonNull Pageable pageable,
-                                        @NonNull String token);
+    Page<AuthLog> getCurrentAuthHistory(@NonNull Pageable pageable);
 }

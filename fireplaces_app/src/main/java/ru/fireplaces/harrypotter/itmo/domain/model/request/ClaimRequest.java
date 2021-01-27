@@ -1,13 +1,12 @@
 package ru.fireplaces.harrypotter.itmo.domain.model.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.Data;
-import ru.fireplaces.harrypotter.itmo.domain.model.Fireplace;
+import ru.fireplaces.harrypotter.itmo.domain.model.Coordinates;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.request.RequestRequiredFields;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,52 +20,40 @@ import java.util.List;
 public class ClaimRequest implements RequestRequiredFields {
 
     /**
-     * Departure fireplace ID.
+     * Departure point.
      */
-    private Long departureId;
+    private Coordinates departure;
 
     /**
-     * Arrival fireplace ID.
+     * Destination point.
      */
-    private Long arrivalId;
+    private Coordinates arrival;
 
     /**
-     * Departure date and time.
+     * Travel date.
      */
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime departureTime;
-
-    /**
-     * Departure fireplace (to copy).
-     */
-    @JsonIgnore
-    private Fireplace departure;
-
-    /**
-     * Departure arrival (to copy).
-     */
-    @JsonIgnore
-    private Fireplace arrival;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate travelDate;
 
     @Override
     public List<String> getBlankRequiredFields() {
         List<String> list = new ArrayList<>();
-        if (this.departureId == null) {
-            list.add("departureId");
+        if (this.departure == null) {
+            list.add("departure");
         }
-        if (this.arrivalId == null) {
-            list.add("arrivalId");
+        if (this.arrival == null) {
+            list.add("arrival");
         }
-        if (this.departureTime == null) {
-            list.add("departureTime");
+        if (this.travelDate == null) {
+            list.add("travelDate");
         }
         return list;
     }
 
     @Override
     public String toString() {
-        return "ClaimRequest(departureId=" + this.getDepartureId()
-                + ", arrivalId=" + this.getArrivalId()
-                + ", departureTime=" + this.getDepartureTime() + ")";
+        return "ClaimRequest(departure=" + this.getDeparture()
+                + ", arrival=" + this.getArrival()
+                + ", travelDate=" + this.getTravelDate() + ")";
     }
 }

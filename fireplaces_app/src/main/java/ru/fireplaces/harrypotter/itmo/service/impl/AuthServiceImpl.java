@@ -1,5 +1,6 @@
 package ru.fireplaces.harrypotter.itmo.service.impl;
 
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import ru.fireplaces.harrypotter.itmo.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.response.LoginResponse;
 import ru.fireplaces.harrypotter.itmo.service.AuthService;
 import ru.fireplaces.harrypotter.itmo.service.SecurityService;
+import ru.fireplaces.harrypotter.itmo.utils.Constants;
 import ru.fireplaces.harrypotter.itmo.utils.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,9 +98,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Page<AuthLog> getCurrentAuthHistory(@NonNull Pageable pageable,
-                                               @NonNull String token) {
-        User user = securityService.authorizeToken(token);
+    public Page<AuthLog> getCurrentAuthHistory(@NonNull Pageable pageable) {
+        User user = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
         return authLogRepository.findAllByUser(pageable, user);
     }
 }

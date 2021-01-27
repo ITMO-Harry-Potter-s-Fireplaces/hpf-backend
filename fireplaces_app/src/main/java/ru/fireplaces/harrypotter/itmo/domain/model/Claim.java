@@ -1,6 +1,8 @@
 package ru.fireplaces.harrypotter.itmo.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -9,7 +11,9 @@ import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.utils.interfaces.model.CopyFromRequest;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Claim entity class.
@@ -29,38 +33,91 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
     private Long id;
 
     /**
+     * User.
+     */
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    /**
      * Claim status.
      */
     @Column(nullable = false)
     private ClaimStatus status;
 
     /**
+     * Departure latitude.
+     */
+    @JsonIgnore
+    @Column(name = "departure_lat", nullable = false)
+    private Float departureLat;
+
+    /**
+     * Departure longitude.
+     */
+    @JsonIgnore
+    @Column(name = "departure_lng", nullable = false)
+    private Float departureLng;
+
+    /**
+     * Arrival latitude.
+     */
+    @JsonIgnore
+    @Column(name = "arrival_lat", nullable = false)
+    private Float arrivalLat;
+
+    /**
+     * Arrival longitude.
+     */
+    @JsonIgnore
+    @Column(name = "arrival_lng", nullable = false)
+    private Float arrivalLng;
+
+    /**
+     * Departure coordinates.
+     */
+    @Transient
+    private Coordinates departure;
+
+    /**
+     * Arrival coordinates.
+     */
+    @Transient
+    private Coordinates arrival;
+
+    /**
      * Departure fireplace.
      */
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "departure_id")
-    private Fireplace departure;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "departure_fp_id")
+    private Fireplace departureFireplace;
 
     /**
      * Arrival fireplace.
      */
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "arrival_id")
-    private Fireplace arrival;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "arrival_fp_id")
+    private Fireplace arrivalFireplace;
 
     /**
      * Departure date and time.
      */
-    @JsonFormat(pattern="dd.MM.yyyy HH:mm")
-    @Column(name = "departure_time", nullable = false)
-    private LocalDateTime departureTime;
+    @JsonFormat(pattern="dd.MM.yyyy")
+    @Column(name = "travel_date", nullable = false)
+    private LocalDate travelDate;
 
     /**
-     * User.
+     * Reports count.
      */
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "reports_count", nullable = false)
+    private Long reportsCount;
+
+    /**
+     * Claim reports.
+     */
+    @JsonIgnoreProperties(value = "claim")
+    @OneToMany(mappedBy = "claim")
+    private List<ClaimReport> reports;
 
     /**
      * Date and time of creation.
@@ -80,13 +137,18 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
 
     public Claim() {
         this.status = ClaimStatus.CREATED;
+        this.reportsCount = 0L;
     }
 
     @Override
     public void copy(ClaimRequest request) {
         this.departure = request.getDeparture();
         this.arrival = request.getArrival();
-        this.departureTime = request.getDepartureTime();
+        this.travelDate = request.getTravelDate();
+        this.departureLat = departure.getLat();
+        this.departureLng = departure.getLng();
+        this.arrivalLat = arrival.getLat();
+        this.arrivalLng = arrival.getLng();
     }
 
     @Override
@@ -95,18 +157,22 @@ public class Claim implements CopyFromRequest<ClaimRequest> {
                 ? request.getDeparture() : this.departure;
         this.arrival = request.getArrival() != null
                 ? request.getArrival() : this.arrival;
-        this.departureTime = request.getDepartureTime() != null
-                ? request.getDepartureTime() : this.departureTime;
+        this.travelDate = request.getTravelDate() != null
+                ? request.getTravelDate() : this.travelDate;
+        this.departureLat = departure.getLat();
+        this.departureLng = departure.getLng();
+        this.arrivalLat = arrival.getLat();
+        this.arrivalLng = arrival.getLng();
     }
 
     @Override
     public String toString() {
         return "Claim(id=" + this.getId()
+                + ", userId=" + this.getUser().getId()
                 + ", status=" + this.getStatus()
-                + ", departureId=" + this.getDeparture().getId()
-                + ", arrivalId=" + this.getArrival().getId()
-                + ", departureTime=" + this.getDepartureTime()
-                + ", userId=" + this.getUser().getId() + ")";
+                + ", departure=" + this.getDeparture()
+                + ", arrival=" + this.getArrival()
+                + ", travelDate=" + this.getTravelDate() + ")";
     }
 
     /**

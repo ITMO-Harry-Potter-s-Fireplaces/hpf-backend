@@ -96,17 +96,17 @@ public class DatabaseTest {
         assertThat(foundFp2.getDescription(), equalTo(fireplace2.getDescription()));
 
         // Create claim and save
-        LocalDateTime departureTime = LocalDateTime.of(2020, 1, 1, 0, 0);
+        LocalDate departureTime = LocalDate.of(2020, 1, 1);
         Claim claim = new Claim();
-        claim.setDeparture(foundFp1);
-        claim.setArrival(foundFp2);
-        claim.setDepartureTime(departureTime);
+        claim.setDepartureFireplace(foundFp1);
+        claim.setArrivalFireplace(foundFp2);
+        claim.setTravelDate(departureTime);
         claim.setUser(foundUser);
         entityManager.persist(claim);
         entityManager.flush();
 
         // Find created claim
-        Claim foundClaim = claimRepository.findByDepartureTimeAndDeparture(departureTime, foundFp1).orElse(null);
+        Claim foundClaim = claimRepository.findByTravelDateAndDepartureFireplace(departureTime, foundFp1).orElse(null);
 
         // Compare created and found claims
         assertThat(foundClaim, notNullValue());
