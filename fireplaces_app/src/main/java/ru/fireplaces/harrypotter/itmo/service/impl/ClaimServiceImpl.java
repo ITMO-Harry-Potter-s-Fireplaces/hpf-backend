@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import ru.fireplaces.harrypotter.itmo.domain.dao.ClaimLogRepository;
 import ru.fireplaces.harrypotter.itmo.domain.dao.ClaimReportRepository;
 import ru.fireplaces.harrypotter.itmo.domain.dao.ClaimRepository;
 import ru.fireplaces.harrypotter.itmo.domain.enums.ClaimStatus;
@@ -36,16 +37,19 @@ public class ClaimServiceImpl implements ClaimService {
 
     private final ClaimRepository claimRepository;
     private final ClaimReportRepository claimReportRepository;
+    private final ClaimLogRepository claimLogRepository;
     private final SecurityService securityService;
     private final FireplaceService fireplaceService;
 
     @Autowired
     public ClaimServiceImpl(ClaimRepository claimRepository,
                             ClaimReportRepository claimReportRepository,
+                            ClaimLogRepository claimLogRepository,
                             SecurityService securityService,
                             FireplaceService fireplaceService) {
         this.claimRepository = claimRepository;
         this.claimReportRepository = claimReportRepository;
+        this.claimLogRepository = claimLogRepository;
         this.securityService = securityService;
         this.fireplaceService = fireplaceService;
     }
@@ -118,6 +122,17 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     @Override
+    public Page<ClaimLog> getClaimLogs(@NonNull Pageable pageable, @NonNull Long id)
+            throws EntityNotFoundException, ActionForbiddenException {
+        Claim claim = getClaim(id);
+        User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
+        if (currentUser.getRole().equals(Role.USER) && !claim.getUser().equals(currentUser)) {
+            throw new ActionForbiddenException("Not allowed to get other user's claim");
+        }
+        return claimLogRepository.findAllByClaim(pageable, claim);
+    }
+
+    @Override
     public Claim createClaim(@NonNull ClaimRequest request)
             throws BadInputDataException, ActionInapplicableException {
         List<String> blankFields = request.getBlankRequiredFields(); // Get blank fields
@@ -129,6 +144,8 @@ public class ClaimServiceImpl implements ClaimService {
         Claim claim = new Claim();
         claim.copy(request);
         claim.setUser(currentUser);
+        ClaimLog claimLog = new ClaimLog(claim, currentUser, null, ClaimStatus.CREATED);
+        claimLogRepository.save(claimLog);
         return claimRepository.save(claim);
     }
 
@@ -154,6 +171,7 @@ public class ClaimServiceImpl implements ClaimService {
     public Claim approveClaim(@NonNull Long id,
                               @NonNull Long departureId,
                               @NonNull Long arrivalId) throws EntityNotFoundException, ActionInapplicableException {
+        User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
         Claim claim = getClaim(id);
         if (claim.getStatus().equals(ClaimStatus.CREATED)) {
             Fireplace departure = fireplaceService.getFireplace(departureId);
@@ -161,6 +179,8 @@ public class ClaimServiceImpl implements ClaimService {
             claim.setDepartureFireplace(departure);
             claim.setArrivalFireplace(arrival);
             claim.setStatus(ClaimStatus.APPROVED);
+            ClaimLog claimLog = new ClaimLog(claim, currentUser, ClaimStatus.CREATED, ClaimStatus.APPROVED);
+            claimLogRepository.save(claimLog);
             return claimRepository.save(claim);
         }
         throw new ActionInapplicableException("Cannot approve claim with status " + claim.getStatus());
@@ -173,7 +193,9 @@ public class ClaimServiceImpl implements ClaimService {
         Claim claim = getClaim(id);
         if (claim.getUser().equals(currentUser)) {
             if (claim.getStatus().equals(ClaimStatus.CREATED) || claim.getStatus().equals(ClaimStatus.APPROVED)) {
+                ClaimLog claimLog = new ClaimLog(claim, currentUser, claim.getStatus(), ClaimStatus.CANCELLED);
                 claim.setStatus(ClaimStatus.CANCELLED);
+                claimLogRepository.save(claimLog);
             }
             else {
                 throw new ActionInapplicableException("Cannot cancel claim with status " + claim.getStatus());
@@ -181,7 +203,9 @@ public class ClaimServiceImpl implements ClaimService {
         }
         else if (currentUser.getRole().equals(Role.ADMIN) || currentUser.getRole().equals(Role.MODERATOR)) {
             if (claim.getStatus().equals(ClaimStatus.CREATED)) {
+                ClaimLog claimLog = new ClaimLog(claim, currentUser, ClaimStatus.CREATED, ClaimStatus.REJECTED);
                 claim.setStatus(ClaimStatus.REJECTED);
+                claimLogRepository.save(claimLog);
             }
             else {
                 throw new ActionInapplicableException("Cannot reject claim with status " + claim.getStatus());
@@ -200,7 +224,9 @@ public class ClaimServiceImpl implements ClaimService {
         Claim claim = getClaim(id);
         if (claim.getUser().equals(currentUser)) {
             if (claim.getStatus().equals(ClaimStatus.APPROVED)) {
+                ClaimLog claimLog = new ClaimLog(claim, currentUser, ClaimStatus.APPROVED, ClaimStatus.COMPLETED);
                 claim.setStatus(ClaimStatus.COMPLETED);
+                claimLogRepository.save(claimLog);
                 return claimRepository.save(claim);
             }
             throw new ActionInapplicableException("Cannot complete claim with status " + claim.getStatus());

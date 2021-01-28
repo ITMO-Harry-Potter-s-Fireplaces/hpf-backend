@@ -7,6 +7,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.domain.model.Claim;
+import ru.fireplaces.harrypotter.itmo.domain.model.ClaimLog;
 import ru.fireplaces.harrypotter.itmo.domain.model.ClaimReport;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimReportRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimRequest;
@@ -62,6 +63,18 @@ public interface ClaimService {
      * @throws ActionForbiddenException Not enough permissions
      */
     Claim getClaim(@NonNull Long id) throws EntityNotFoundException, ActionForbiddenException;
+
+    /**
+     * Returns a page with {@link ClaimLog} entities by log ID.
+     *
+     * @param pageable Pageable params
+     * @param id Log ID
+     * @return {@link Page} with queered {@link ClaimLog} entities
+     * @throws EntityNotFoundException Log not found
+     * @throws ActionForbiddenException Not enough permissions
+     */
+    Page<ClaimLog> getClaimLogs(@NonNull Pageable pageable,
+                                @NonNull Long id) throws EntityNotFoundException, ActionForbiddenException;
 
     /**
      * Creates new {@link Claim} entity.

@@ -11,6 +11,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.fireplaces.harrypotter.itmo.domain.enums.ClaimStatus;
 import ru.fireplaces.harrypotter.itmo.domain.model.Claim;
+import ru.fireplaces.harrypotter.itmo.domain.model.ClaimLog;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimReportRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.service.ClaimService;
@@ -88,6 +89,27 @@ public class ClaimController {
         logger.info("getClaim: id=" + id + "; token=" + token);
         CodeMessageResponse<Claim> response = CodeMessageResponseBuilder.ok(claimService.getClaim(id));
         logger.info("getClaim: response=" + response.getBody());
+        return response;
+    }
+
+    /**
+     * Returns a page with list of {@link ClaimLog} entities.<br>
+     * Default page: 0; size: 20; sort: 'id'
+     *
+     * @param token Authorization token
+     * @param pageable Pageable params
+     * @param id Claim log ID
+     * @return <b>Response code</b>: 200<br>
+     *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link ClaimLog} objects
+     */
+    @TokenVerification
+    @GetMapping(value = "/{id}/logs", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PageResponse<ClaimLog> getClaimLogs(@RequestHeader(value = "Authorization") String token,
+                                               @PageableDefault(size = 20, sort = "id") Pageable pageable,
+                                               @PathVariable Long id) {
+        logger.info("getClaimLogs: pageable=" + pageable + "; claimId=" + id + "; token=" + token);
+        PageResponse<ClaimLog> response = CodeMessageResponseBuilder.page(claimService.getClaimLogs(pageable, id));
+        logger.info("getClaimLogs: response=" + response.getBody());
         return response;
     }
 

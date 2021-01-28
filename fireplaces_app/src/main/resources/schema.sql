@@ -4,6 +4,7 @@ CREATE SEQUENCE fireplaces_id_seq MINVALUE 0 START 0 INCREMENT 1;
 CREATE SEQUENCE claims_id_seq MINVALUE 0 START 0 INCREMENT 1;
 CREATE SEQUENCE auth_logs_id_seq MINVALUE 0 START 0 INCREMENT 1;
 CREATE SEQUENCE claim_reports_id_seq MINVALUE 0 START 0 INCREMENT 1;
+CREATE SEQUENCE claim_logs_id_seq MINVALUE 0 START 0 INCREMENT 1;
 
 -- Create tables --
 CREATE TABLE users(
@@ -55,4 +56,13 @@ CREATE TABLE claim_reports(
     claim_id integer NOT NULL CONSTRAINT report_claim_fk REFERENCES claims(id),
     message varchar(511),
     report_time timestamp NOT NULL
+);
+
+CREATE TABLE claim_logs(
+    id integer DEFAULT nextval('public.claim_logs_id_seq'::regclass) CONSTRAINT claim_logs_pkey PRIMARY KEY,
+    claim_id integer NOT NULL CONSTRAINT log_claim_fk REFERENCES claims(id),
+    user_id integer NOT NULL CONSTRAINT log_user_fk REFERENCES users(id),
+    prev_state integer NOT NULL,
+    new_state integer NOT NULL,
+    timestamp timestamp NOT NULL
 );
