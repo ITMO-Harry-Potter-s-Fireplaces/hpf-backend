@@ -144,9 +144,10 @@ public class ClaimServiceImpl implements ClaimService {
         Claim claim = new Claim();
         claim.copy(request);
         claim.setUser(currentUser);
-        ClaimLog claimLog = new ClaimLog(claim, currentUser, null, ClaimStatus.CREATED);
+        Claim savedClaim = claimRepository.save(claim);
+        ClaimLog claimLog = new ClaimLog(savedClaim, currentUser, null, ClaimStatus.CREATED);
         claimLogRepository.save(claimLog);
-        return claimRepository.save(claim);
+        return savedClaim;
     }
 
     @Override
