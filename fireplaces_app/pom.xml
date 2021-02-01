@@ -51,6 +51,13 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <!-- Mail -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+
         <!-- Custom Utils Lib -->
         <dependency>
             <groupId>ru.fireplaces.harrypotter.itmo</groupId>

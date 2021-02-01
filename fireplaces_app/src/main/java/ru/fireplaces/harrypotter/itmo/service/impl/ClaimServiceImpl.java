@@ -16,6 +16,7 @@ import ru.fireplaces.harrypotter.itmo.domain.model.*;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimReportRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.ClaimRequest;
 import ru.fireplaces.harrypotter.itmo.service.ClaimService;
+import ru.fireplaces.harrypotter.itmo.service.EmailService;
 import ru.fireplaces.harrypotter.itmo.service.FireplaceService;
 import ru.fireplaces.harrypotter.itmo.service.SecurityService;
 import ru.fireplaces.harrypotter.itmo.utils.Constants;
@@ -40,18 +41,21 @@ public class ClaimServiceImpl implements ClaimService {
     private final ClaimLogRepository claimLogRepository;
     private final SecurityService securityService;
     private final FireplaceService fireplaceService;
+    private final EmailService emailService;
 
     @Autowired
     public ClaimServiceImpl(ClaimRepository claimRepository,
                             ClaimReportRepository claimReportRepository,
                             ClaimLogRepository claimLogRepository,
                             SecurityService securityService,
-                            FireplaceService fireplaceService) {
+                            FireplaceService fireplaceService,
+                            EmailService emailService) {
         this.claimRepository = claimRepository;
         this.claimReportRepository = claimReportRepository;
         this.claimLogRepository = claimLogRepository;
         this.securityService = securityService;
         this.fireplaceService = fireplaceService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -182,6 +186,13 @@ public class ClaimServiceImpl implements ClaimService {
             claim.setStatus(ClaimStatus.APPROVED);
             ClaimLog claimLog = new ClaimLog(claim, currentUser, ClaimStatus.CREATED, ClaimStatus.APPROVED);
             claimLogRepository.save(claimLog);
+            String emailMessage = "Дорогой, " + claim.getUser().getName() + "!\nМы рады сообщить, что ваша заявка на "
+                    + claim.getTravelDate() + " была одобрена!\n\n" +
+                    "Камин отправления: " + departure.getDescription()
+                    + " [" + departure.getLat() + "; " + departure.getLng() + "]\n" +
+                    "Камин прибытия: " + arrival.getDescription()
+                    + " [" + arrival.getLat() + "; " + arrival.getLng() + "]\n\nС уважением,\nКоманда HPF";
+            emailService.sendEmail(claim.getUser().getEmail(), "Ваша заявка на перемещение одобрена!", emailMessage);
             return claimRepository.save(claim);
         }
         throw new ActionInapplicableException("Cannot approve claim with status " + claim.getStatus());

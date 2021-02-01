@@ -15,6 +15,7 @@ import ru.fireplaces.harrypotter.itmo.domain.model.request.LoginRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.UserRequest;
 import ru.fireplaces.harrypotter.itmo.domain.model.response.LoginResponse;
 import ru.fireplaces.harrypotter.itmo.service.AuthService;
+import ru.fireplaces.harrypotter.itmo.service.EmailService;
 import ru.fireplaces.harrypotter.itmo.service.SecurityService;
 import ru.fireplaces.harrypotter.itmo.utils.Constants;
 import ru.fireplaces.harrypotter.itmo.utils.exception.*;
@@ -36,14 +37,17 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final AuthLogRepository authLogRepository;
     private final SecurityService securityService;
+    private final EmailService emailService;
 
     @Autowired
     public AuthServiceImpl(UserRepository userRepository,
                            AuthLogRepository authLogRepository,
-                           SecurityService securityService) {
+                           SecurityService securityService,
+                           EmailService emailService) {
         this.userRepository = userRepository;
         this.authLogRepository = authLogRepository;
         this.securityService = securityService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -63,6 +67,9 @@ public class AuthServiceImpl implements AuthService {
         user.copy(userRequest);
         User savedUser = userRepository.save(user);
         authLogRepository.save(new AuthLog(savedUser, request.getRemoteAddr(), true));
+        String emailMessage = "Дорогой, " + savedUser.getName() + "!\nМы рады приветствовать вас на нашем сервисе! " +
+                "Благодарим вас за регистрацию и желаем вам приятных путешествий!\n\nС уважением,\nКоманда HPF";
+        emailService.sendEmail(savedUser.getEmail(), "Регистрация на Harry Potter's Fireplaces", emailMessage);
         return new LoginResponse(savedUser.getId(), securityService.generateToken(savedUser));
     }
 
