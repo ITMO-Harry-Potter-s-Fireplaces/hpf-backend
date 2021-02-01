@@ -76,7 +76,7 @@ public class AuthController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<LoginResponse> login(@RequestBody LoginRequest loginRequest,
                                                     HttpServletRequest request) {
-        logger.info("login: loginRequest=" + request);
+        logger.info("login: loginRequest=" + loginRequest);
         CodeMessageResponse<LoginResponse> response =
                 CodeMessageResponseBuilder.ok(authService.login(loginRequest, request));
         logger.info("login: response=" + response.getBody());

@@ -3,6 +3,7 @@ package ru.fireplaces.harrypotter.itmo.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.domain.model.User;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.UserRequest;
@@ -27,23 +28,24 @@ public interface UserService {
      * Filters used: {@link User} role IDs.
      *
      * @param pageable {@link Pageable} params
-     * @param roleIds List of role IDs
+     * @param roles List of roles
      * @param active Account status
      * @return {@link Page} with queered {@link User} entities
      */
     Page<User> getUsersPage(@NonNull Pageable pageable,
-                            List<Long> roleIds,
-                            @NonNull Boolean active);
+                            @Nullable List<Role> roles,
+                            @Nullable Boolean active);
 
     /**
      * Returns a list of {@link User} entities.<br>
      * Filters used: {@link User} role IDs.
      *
-     * @param roleIds List of role IDs
+     * @param roles List of roles
      * @param active Account status
      * @return {@link List} with queered {@link User} entities
      */
-    List<User> getUsers(List<Long> roleIds, @NonNull Boolean active);
+    List<User> getUsers(@Nullable List<Role> roles,
+                        @Nullable Boolean active);
 
     /**
      * Returns a {@link User} entity by ID.
@@ -65,7 +67,9 @@ public interface UserService {
      * @throws EntityNotFoundException Not Found Exception
      * @throws EntityAlreadyExistsException User with such email already exists
      */
-    User updateUser(@NonNull Long id, @NonNull UserRequest userRequest, @NonNull Boolean copy)
+    User updateUser(@NonNull Long id,
+                    @NonNull UserRequest userRequest,
+                    @NonNull Boolean copy)
             throws BadInputDataException, EntityNotFoundException, EntityAlreadyExistsException;
 
     /**
@@ -92,7 +96,8 @@ public interface UserService {
      * @throws BadInputDataException Bad {@link UserRequest} properties exception
      * @throws EntityAlreadyExistsException User with such email already exists
      */
-    User updateCurrentUser(@NonNull UserRequest userRequest, @NonNull Boolean copy)
+    User updateCurrentUser(@NonNull UserRequest userRequest,
+                           @NonNull Boolean copy)
             throws BadInputDataException, EntityAlreadyExistsException;
 
     /**
@@ -109,6 +114,7 @@ public interface UserService {
      * @throws EntityNotFoundException Not Found Exception
      * @throws ActionForbiddenException Action is not allowed
      */
-    User changeUserRole(@NonNull Long id, @NonNull Role role)
+    User changeUserRole(@NonNull Long id,
+                        @NonNull Role role)
             throws EntityNotFoundException, ActionForbiddenException;
 }

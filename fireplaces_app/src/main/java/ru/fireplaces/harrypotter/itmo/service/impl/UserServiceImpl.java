@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.domain.dao.UserRepository;
 import ru.fireplaces.harrypotter.itmo.domain.model.User;
@@ -40,19 +41,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getUsersPage(@NonNull Pageable pageable, List<Long> roleIds, @NonNull Boolean active) {
-        if (roleIds != null) {
-            return userRepository.findAllByActiveAndRoleIn(pageable, active, roleIds);
+    public Page<User> getUsersPage(@NonNull Pageable pageable,
+                                   @Nullable List<Role> roles,
+                                   @Nullable Boolean active) {
+        if (active != null) {
+            if (roles != null) {
+                return userRepository.findAllByActiveAndRoleIn(pageable, active, roles);
+            }
+            return userRepository.findAllByActive(pageable, active);
         }
-        return userRepository.findAllByActive(pageable, active);
+        if (roles != null) {
+            return userRepository.findAllByRoleIn(pageable, roles);
+        }
+        return userRepository.findAll(pageable);
     }
 
     @Override
-    public List<User> getUsers(List<Long> roleIds, @NonNull Boolean active) {
-        if (roleIds != null) {
-            return userRepository.findAllByActiveAndRoleIn(active, roleIds);
+    public List<User> getUsers(@Nullable List<Role> roles,
+                               @Nullable Boolean active) {
+        if (active != null) {
+            if (roles != null) {
+                return userRepository.findAllByActiveAndRoleIn(active, roles);
+            }
+            return userRepository.findAllByActive(active);
         }
-        return userRepository.findAllByActive(active);
+        if (roles != null) {
+            return userRepository.findAllByRoleIn(roles);
+        }
+        return userRepository.findAll();
     }
 
     @Override
@@ -80,7 +96,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(@NonNull Long id) throws EntityNotFoundException {
         User user = getUser(id);
         User currentUser = getCurrentUser();
-        if (!currentUser.getId().equals(0L) && currentUser.getRole().getValue() <= user.getRole().getValue()) {
+        if (!currentUser.getId().equals(0L) && currentUser.getRole().getValue() >= user.getRole().getValue()) {
             throw new ActionForbiddenException("Not enough permissions to change this active status");
         }
         user.setActive(!user.getActive());

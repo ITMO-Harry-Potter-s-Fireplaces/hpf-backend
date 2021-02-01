@@ -36,23 +36,40 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findAllByActive(Pageable pageable, Boolean active);
 
     /**
+     * Fetches all users by roles.
+     *
+     * @param roles Roles
+     * @return {@link List} with fetched {@link User} entities
+     */
+    List<User> findAllByRoleIn(Iterable<Role> roles);
+
+    /**
+     * Fetches all users by roles.
+     *
+     * @param pageable {@link Pageable} params
+     * @param roles Roles
+     * @return {@link Page} with fetched {@link User} entities
+     */
+    Page<User> findAllByRoleIn(Pageable pageable, Iterable<Role> roles);
+
+    /**
      * Fetches all users by active status and role IDs.
      *
      * @param active Flag: fetch active users or not
-     * @param roleIds Role IDs
+     * @param roles Roles
      * @return {@link List} with fetched {@link User} entities
      */
-    List<User> findAllByActiveAndRoleIn(Boolean active, Iterable<Long> roleIds);
+    List<User> findAllByActiveAndRoleIn(Boolean active, Iterable<Role> roles);
 
     /**
      * Fetches all users by active status and role IDs.
      *
      * @param pageable {@link Pageable} params
      * @param active Flag: fetch active users or not
-     * @param roleIds Role IDs
+     * @param roles Roles
      * @return {@link Page} with fetched {@link User} entities
      */
-    Page<User> findAllByActiveAndRoleIn(Pageable pageable, Boolean active, Iterable<Long> roleIds);
+    Page<User> findAllByActiveAndRoleIn(Pageable pageable, Boolean active, Iterable<Role> roles);
 
     /**
      * Finds {@link User} with specified email address.

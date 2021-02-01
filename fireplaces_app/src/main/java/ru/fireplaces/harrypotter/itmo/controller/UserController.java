@@ -49,7 +49,7 @@ public class UserController {
      *
      * @param token Authorization token
      * @param pageable Pageable params
-     * @param roleIds Filter: role IDs
+     * @param roles Filter: roles
      * @param active Account status
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link User} objects
@@ -58,12 +58,12 @@ public class UserController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponse<User> getAllUsers(@RequestHeader(value = "Authorization") String token,
                                           @PageableDefault(size = 20, sort = "id") Pageable pageable,
-                                          @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
-                                          @RequestParam(value = "active", defaultValue = "true") Boolean active) {
-        logger.info("getAllUsers: pageable=" + pageable + "; roleIds=" + roleIds
+                                          @RequestParam(value = "roles", required = false) List<Role> roles,
+                                          @RequestParam(value = "active", required = false) Boolean active) {
+        logger.info("getAllUsers: pageable=" + pageable + "; roles=" + roles
                 + "; active=" + active + "; token=" + token);
         PageResponse<User> response =
-                CodeMessageResponseBuilder.page(userService.getUsersPage(pageable, roleIds, active));
+                CodeMessageResponseBuilder.page(userService.getUsersPage(pageable, roles, active));
         logger.info("getAllUsers: response=" + response.getBody());
         return response;
     }
