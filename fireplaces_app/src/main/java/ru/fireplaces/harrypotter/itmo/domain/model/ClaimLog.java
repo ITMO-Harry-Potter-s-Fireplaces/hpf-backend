@@ -57,6 +57,12 @@ public class ClaimLog {
     private ClaimStatus newState;
 
     /**
+     * Change state reason.
+     */
+    @Column(name = "message", length = 511)
+    private String message;
+
+    /**
      * Date and time of log.
      */
     @Setter(AccessLevel.NONE)
@@ -101,6 +107,7 @@ public class ClaimLog {
                 + ", userId=" + this.getUser().getId()
                 + ", prevState=" + this.getPrevState()
                 + ", newState=" + this.getNewState()
+                + ", message=" + this.getMessage()
                 + ", timestamp=" + this.getTimestamp() + ")";
     }
 }

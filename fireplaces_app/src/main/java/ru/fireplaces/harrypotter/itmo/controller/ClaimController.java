@@ -207,14 +207,16 @@ public class ClaimController {
      *
      * @param token Authorization token
      * @param id Claim ID
+     * @param message Additional information
      * @return <b>Response code</b>: 204
      */
     @TokenVerification
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CodeMessageResponse<String> cancelRejectClaim(@RequestHeader(value = "Authorization") String token,
-                                                         @PathVariable Long id) {
+                                                         @PathVariable Long id,
+                                                         @RequestParam(required = false) String message) {
         logger.info("completeClaim: id=" + id + "; token=" + token);
-        claimService.cancelRejectClaim(id);
+        claimService.cancelRejectClaim(id, message);
         CodeMessageResponse<String> response = CodeMessageResponseBuilder.noContent();
         logger.info("completeClaim: response=" + response.getBody());
         return response;

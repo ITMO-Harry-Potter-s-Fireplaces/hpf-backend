@@ -64,5 +64,6 @@ CREATE TABLE claim_logs(
     user_id integer NOT NULL CONSTRAINT log_user_fk REFERENCES users(id),
     prev_state integer,
     new_state integer NOT NULL,
+    message varchar(511),
     timestamp timestamp NOT NULL
 );

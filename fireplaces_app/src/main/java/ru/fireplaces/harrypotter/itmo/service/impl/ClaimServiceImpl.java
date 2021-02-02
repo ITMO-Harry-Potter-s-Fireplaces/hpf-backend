@@ -199,7 +199,8 @@ public class ClaimServiceImpl implements ClaimService {
     }
 
     @Override
-    public Claim cancelRejectClaim(@NonNull Long id)
+    public Claim cancelRejectClaim(@NonNull Long id,
+                                   @Nullable String message)
             throws EntityNotFoundException, ActionInapplicableException, ActionForbiddenException {
         User currentUser = securityService.authorizeToken(MDC.get(Constants.KEY_MDC_AUTH_TOKEN));
         Claim claim = getClaim(id);
@@ -216,8 +217,13 @@ public class ClaimServiceImpl implements ClaimService {
         else if (currentUser.getRole().equals(Role.ADMIN) || currentUser.getRole().equals(Role.MODERATOR)) {
             if (claim.getStatus().equals(ClaimStatus.CREATED)) {
                 ClaimLog claimLog = new ClaimLog(claim, currentUser, ClaimStatus.CREATED, ClaimStatus.REJECTED);
+                claimLog.setMessage(message);
                 claim.setStatus(ClaimStatus.REJECTED);
                 claimLogRepository.save(claimLog);
+                String emailMessage = "Дорогой, " + claim.getUser().getName() + "!\nМы вынуждены сообщить, что "
+                        + "ваша заявка на " + claim.getTravelDate() + " была отклонена!\n\n" +
+                        "Сообщение диспетчера: " + message + "\n\nС уважением,\nКоманда HPF";
+                emailService.sendEmail(claim.getUser().getEmail(), "Ваша заявка на перемещение отклонена", emailMessage);
             }
             else {
                 throw new ActionInapplicableException("Cannot reject claim with status " + claim.getStatus());

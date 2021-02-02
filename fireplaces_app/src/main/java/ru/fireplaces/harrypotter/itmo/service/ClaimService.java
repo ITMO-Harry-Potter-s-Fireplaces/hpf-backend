@@ -117,12 +117,14 @@ public interface ClaimService {
      * Updates {@link Claim} status to REJECTED or CANCELLED by ID.
      *
      * @param id Claim ID
+     * @param message Additional information
      * @return Updated {@link Claim} entity
      * @throws EntityNotFoundException Not Found Exception
      * @throws ActionInapplicableException Cannot change claim status
      * @throws ActionForbiddenException When try to change not your own claim status
      */
-    Claim cancelRejectClaim(@NonNull Long id)
+    Claim cancelRejectClaim(@NonNull Long id,
+                            @Nullable String message)
             throws EntityNotFoundException, ActionInapplicableException, ActionForbiddenException;
 
     /**
