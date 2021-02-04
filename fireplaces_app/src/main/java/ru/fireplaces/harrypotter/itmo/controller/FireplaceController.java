@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
@@ -66,9 +67,10 @@ public class FireplaceController {
                                                  @RequestParam(required = false) Float lat,
                                                  @RequestParam(required = false) Float lng,
                                                  @RequestParam(required = false) Double radius,
-                                                 @RequestParam(required = false) LocalDate travelDate) {
+                                                 @RequestParam(required = false)
+                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate travelDate) {
         logger.info("getFireplaces: pageable=" + pageable + "; coords=(" + lat + ", " + lng
-                + "; radius=" + radius + "); token=" + token);
+                + "); radius=" + radius + "; token=" + token);
         PageResponse<Fireplace> response = CodeMessageResponseBuilder.page(
                 fireplaceService.getFireplacesPage(pageable, new CoordsRequest(lat, lng, radius), travelDate));
         logger.info("getFireplaces: response=" + response.getBody());
