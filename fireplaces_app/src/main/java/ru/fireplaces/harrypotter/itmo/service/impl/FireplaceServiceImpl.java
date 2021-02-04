@@ -19,7 +19,6 @@ import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link FireplaceService} interface.
@@ -33,13 +32,10 @@ public class FireplaceServiceImpl implements FireplaceService {
     public static final String SERVICE_VALUE = "FireplaceServiceImpl";
 
     private final FireplaceRepository fireplaceRepository;
-    private final ClaimController claimController;
 
     @Autowired
-    public FireplaceServiceImpl(FireplaceRepository fireplaceRepository,
-                                ClaimController claimController) {
+    public FireplaceServiceImpl(FireplaceRepository fireplaceRepository) {
         this.fireplaceRepository = fireplaceRepository;
-        this.claimController = claimController;
     }
 
     @Override
