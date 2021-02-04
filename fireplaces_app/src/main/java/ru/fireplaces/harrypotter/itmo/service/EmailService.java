@@ -1,5 +1,6 @@
 package ru.fireplaces.harrypotter.itmo.service;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,5 +18,6 @@ public interface EmailService {
      * @param subject Mail subject
      * @param text Mail text
      */
+    @Async
     void sendEmail(String to, String subject, String text);
 }
