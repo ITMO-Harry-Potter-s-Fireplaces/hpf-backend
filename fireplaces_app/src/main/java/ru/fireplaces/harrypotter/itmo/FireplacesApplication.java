@@ -3,7 +3,6 @@ package ru.fireplaces.harrypotter.itmo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.scheduling.annotation.EnableAsync;
 import ru.fireplaces.harrypotter.itmo.config.SecurityKeysProperties;
 
 /**
@@ -12,7 +11,6 @@ import ru.fireplaces.harrypotter.itmo.config.SecurityKeysProperties;
  * @author seniorkot
  */
 @SpringBootApplication
-@EnableAsync
 @EnableConfigurationProperties({SecurityKeysProperties.class})
 public class FireplacesApplication {
 
