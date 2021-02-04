@@ -18,5 +18,6 @@ public interface EmailService {
      * @param subject Mail subject
      * @param text Mail text
      */
+    @Async
     void sendEmail(String to, String subject, String text);
 }
