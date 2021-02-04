@@ -21,6 +21,7 @@ import ru.fireplaces.harrypotter.itmo.utils.response.CodeMessageResponseBuilder;
 import ru.fireplaces.harrypotter.itmo.utils.response.PageResponse;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 /**
  * REST controller for fireplaces.
@@ -54,6 +55,7 @@ public class FireplaceController {
      * @param lat Latitude (required if lng and radius are not null)
      * @param lng Longitude (required if lat and radius are not null)
      * @param radius Search radius (required if lat and lng are not null)
+     * @param travelDate Sort fireplaces with claims count on specific date
      * @return <b>Response code</b>: 200<br>
      *     <b>Body</b>: {@link org.springframework.data.domain.Page} with list of {@link Fireplace} objects
      */
@@ -63,11 +65,12 @@ public class FireplaceController {
                                                  @PageableDefault(size = 20, sort = "id") Pageable pageable,
                                                  @RequestParam(required = false) Float lat,
                                                  @RequestParam(required = false) Float lng,
-                                                 @RequestParam(required = false) Double radius) {
+                                                 @RequestParam(required = false) Double radius,
+                                                 @RequestParam(required = false) LocalDate travelDate) {
         logger.info("getFireplaces: pageable=" + pageable + "; coords=(" + lat + ", " + lng
                 + "; radius=" + radius + "); token=" + token);
         PageResponse<Fireplace> response = CodeMessageResponseBuilder.page(
-                fireplaceService.getFireplacesPage(pageable, new CoordsRequest(lat, lng, radius)));
+                fireplaceService.getFireplacesPage(pageable, new CoordsRequest(lat, lng, radius), travelDate));
         logger.info("getFireplaces: response=" + response.getBody());
         return response;
     }

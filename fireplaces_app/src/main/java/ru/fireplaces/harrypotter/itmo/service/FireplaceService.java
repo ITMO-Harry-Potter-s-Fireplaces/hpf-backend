@@ -3,6 +3,7 @@ package ru.fireplaces.harrypotter.itmo.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import ru.fireplaces.harrypotter.itmo.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.CoordsRequest;
@@ -10,6 +11,8 @@ import ru.fireplaces.harrypotter.itmo.domain.model.request.FireplaceRequest;
 import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityAlreadyExistsException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
+
+import java.time.LocalDate;
 
 /**
  * Service interface to manipulate {@link Fireplace} data.
@@ -25,10 +28,13 @@ public interface FireplaceService {
      *
      * @param pageable {@link Pageable} params
      * @param coords Latitude and longitude with search radius
+     * @param travelDate Sort fireplaces with claims count on specific date
      * @return {@link Page} with queered {@link Fireplace} entities
      * @throws BadInputDataException Bad coords
      */
-    Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable, @NonNull CoordsRequest coords)
+    Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable,
+                                      @NonNull CoordsRequest coords,
+                                      @Nullable LocalDate travelDate)
             throws BadInputDataException;
 
     /**

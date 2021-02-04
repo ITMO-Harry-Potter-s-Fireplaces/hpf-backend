@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import ru.fireplaces.harrypotter.itmo.controller.ClaimController;
 import ru.fireplaces.harrypotter.itmo.domain.dao.FireplaceRepository;
 import ru.fireplaces.harrypotter.itmo.domain.model.Fireplace;
 import ru.fireplaces.harrypotter.itmo.domain.model.request.CoordsRequest;
@@ -15,7 +17,9 @@ import ru.fireplaces.harrypotter.itmo.utils.exception.BadInputDataException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityAlreadyExistsException;
 import ru.fireplaces.harrypotter.itmo.utils.exception.EntityNotFoundException;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link FireplaceService} interface.
@@ -29,15 +33,19 @@ public class FireplaceServiceImpl implements FireplaceService {
     public static final String SERVICE_VALUE = "FireplaceServiceImpl";
 
     private final FireplaceRepository fireplaceRepository;
+    private final ClaimController claimController;
 
     @Autowired
-    public FireplaceServiceImpl(FireplaceRepository fireplaceRepository) {
+    public FireplaceServiceImpl(FireplaceRepository fireplaceRepository,
+                                ClaimController claimController) {
         this.fireplaceRepository = fireplaceRepository;
+        this.claimController = claimController;
     }
 
     @Override
     public Page<Fireplace> getFireplacesPage(@NonNull Pageable pageable,
-                                             @NonNull CoordsRequest coords) {
+                                             @NonNull CoordsRequest coords,
+                                             @Nullable LocalDate travelDate) {
         if (coords.isEmpty()) {
             return fireplaceRepository.findAll(pageable);
         }
@@ -46,7 +54,40 @@ public class FireplaceServiceImpl implements FireplaceService {
             throw new BadInputDataException(FireplaceRequest.class,
                     String.join(", ", blankFields), "are missing");
         }
-        return fireplaceRepository.findAllNearest(pageable, coords.getLat(), coords.getLng(), coords.getRadius());
+        if (travelDate == null) {
+            return fireplaceRepository
+                    .findAllNearest(pageable, coords.getLat(), coords.getLng(), coords.getRadius())
+                    .map(fireplace -> {
+                        fireplace.setDistance(getDistance(fireplace, coords.getLat(), coords.getLng()));
+                        return fireplace;
+                    });
+        }
+        else {
+            return fireplaceRepository
+                    .findAllNearest(pageable, coords.getLat(), coords.getLng(), coords.getRadius())
+                    .map(fireplace -> {
+                        fireplace.setDistance(getDistance(fireplace, coords.getLat(), coords.getLng()));
+                        fireplace.setClaimsCount(
+                                fireplace.getClaimsDeparture().stream().filter(claim -> claim.getTravelDate().equals(travelDate)).count() +
+                                fireplace.getClaimsArrival().stream().filter(claim -> claim.getTravelDate().equals(travelDate)).count());
+                        return fireplace;
+                    });
+        }
+    }
+
+    /**
+     * Returns a distance (km) between provided {@link Fireplace}
+     * and a point on map.
+     *
+     * @param fp Fireplace
+     * @param lat Latitude
+     * @param lng Longitude
+     * @return Fireplace distance from provided point
+     */
+    private Double getDistance(@NonNull Fireplace fp, @NonNull Float lat, @NonNull Float lng) {
+        return 6371.0f * Math.acos(Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(fp.getLat())
+                * Math.cos(Math.toRadians(fp.getLng()) - Math.toRadians(lng))
+                + Math.sin(Math.toRadians(lat)) * Math.sin(Math.toRadians(fp.getLat()))));
     }
 
     @Override
