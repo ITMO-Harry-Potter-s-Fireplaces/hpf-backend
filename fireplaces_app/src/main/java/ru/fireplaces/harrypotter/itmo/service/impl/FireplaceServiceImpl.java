@@ -81,9 +81,11 @@ public class FireplaceServiceImpl implements FireplaceService {
      * @return Fireplace distance from provided point
      */
     private Double getDistance(@NonNull Fireplace fp, @NonNull Float lat, @NonNull Float lng) {
-        return 6371.0f * Math.acos(Math.cos(Math.toRadians(lat)) * Math.cos(Math.toRadians(fp.getLat())
-                * Math.cos(Math.toRadians(fp.getLng()) - Math.toRadians(lng))
-                + Math.sin(Math.toRadians(lat)) * Math.sin(Math.toRadians(fp.getLat()))));
+        return 6371.0f * Math.acos(
+                Math.cos(Math.toRadians(lat)) *
+                Math.cos(Math.toRadians(fp.getLat())) *
+                Math.cos(Math.toRadians(fp.getLng()) - Math.toRadians(lng)) +
+                Math.sin(Math.toRadians(lat)) * Math.sin(Math.toRadians(fp.getLat())));
     }
 
     @Override
