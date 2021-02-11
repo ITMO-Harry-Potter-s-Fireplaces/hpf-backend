@@ -2,7 +2,9 @@ package ru.fireplaces.harrypotter.itmo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import ru.fireplaces.harrypotter.itmo.config.SecurityKeysProperties;
 
 /**
@@ -12,7 +14,7 @@ import ru.fireplaces.harrypotter.itmo.config.SecurityKeysProperties;
  */
 @SpringBootApplication
 @EnableConfigurationProperties({SecurityKeysProperties.class})
-public class FireplacesApplication {
+public class FireplacesApplication extends SpringBootServletInitializer {
 
     /**
      * Main method.<br>
@@ -22,5 +24,10 @@ public class FireplacesApplication {
      */
     public static void main(String[] args) {
         SpringApplication.run(FireplacesApplication.class, args);
+    }
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(FireplacesApplication.class);
     }
 }

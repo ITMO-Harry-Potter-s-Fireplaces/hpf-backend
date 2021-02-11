@@ -28,7 +28,10 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(@NonNull HttpServletRequest request,
                              @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws Exception {
-        MDC.put(Constants.KEY_MDC_AUTH_TOKEN, request.getHeader("Authorization"));
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null) {
+            MDC.put(Constants.KEY_MDC_AUTH_TOKEN, authHeader);
+        }
         return super.preHandle(request, response, handler);
     }
 
@@ -48,4 +51,3 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         super.postHandle(request, response, handler, modelAndView);
     }
 }
-
