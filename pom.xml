@@ -27,5 +27,6 @@
     <modules>
         <module>utils_lib</module>
         <module>fireplaces_app</module>
+        <module>mail_app</module>
     </modules>
 </project>

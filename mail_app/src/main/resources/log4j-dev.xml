@@ -2,9 +2,9 @@
 <Configuration status="WARN">
     <Properties>
         <Property name="LOG_PATTERN">%date{yyyy-MM-dd HH:mm:ss.SSS} %p -- [%c{1}]: %m%n</Property>
-        <Property name="LOG_SUFFIX">prod</Property>
-        <Property name="LOG_PREFIX">app</Property>
-        <Property name="LOG_PATH">/home/s207189/hpf/logs</Property>
+        <Property name="LOG_SUFFIX">dev</Property>
+        <Property name="LOG_PREFIX">mail-app</Property>
+        <Property name="LOG_PATH">/srv/itmo_hpf/logs</Property>
     </Properties>
 
     <Appenders>
@@ -12,9 +12,9 @@
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
 
-        <RollingFile name="infoLog" fileName="${LOG_PATH}/${LOG_PREFIX}_${LOG_SUFFIX}_info.log"
-                     filePattern="${LOG_PATH}/${LOG_PREFIX}_${LOG_SUFFIX}_%d{yyyy-MM-dd}-%i_info.log">
-            <LevelRangeFilter minLevel="INFO" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+        <RollingFile name="warnLog" fileName="${LOG_PATH}/${LOG_PREFIX}_${LOG_SUFFIX}_warn.log"
+                     filePattern="${LOG_PATH}/${LOG_PREFIX}_${LOG_SUFFIX}_%d{yyyy-MM-dd}-%i_warn.log">
+            <LevelRangeFilter minLevel="WARN" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="5 MB" />
@@ -34,8 +34,9 @@
     </Appenders>
 
     <Loggers>
-        <Logger name="ru.fireplaces.harrypotter.itmo" level="debug" additivity="false">
+        <Logger name="ru.fireplaces.harrypotter.itmo.mail" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="warnLog"/>
             <AppenderRef ref="errorLog"/>
         </Logger>
 
